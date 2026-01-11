@@ -38,6 +38,7 @@ derived. This work would implement these problems and evaluate
 
 - [ravencheck](https://github.com/cuplv/ravencheck)
 - [TIP](https://github.com/tip-org/benchmarks)
+- [TIP format](https://smt-lib.org/papers/smt-lib-reference-v2.6-r2017-07-18.pdf)
 - [CVC5 SMT solver](https://cvc5.github.io/)
 
 ## Final Product
