@@ -151,7 +151,7 @@ In effect, this says that:
 > equal to the appendation of `zs` onto the end of `ys`, it must
 > be true that `xs` are equal to `ys`.
 
-## Translating to `rust`
+## Translating `(list a)` to `rust`
 
 We need to have the following:
 
