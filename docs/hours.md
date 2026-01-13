@@ -11,3 +11,4 @@ week. To ensure this is true, I am logging my hours here.
 ---------|----------|----------|-----------|----------------------------------
  1/8/26  | 7:30 PM  | 9:00 PM  | 1.5 hours | Initial repo setup
  1/10/26 | 3:30 PM  | 5:00 PM  | 3 hours   | Read up on SMT2, more repo setup
+ 1/13/26 | 10:00 PM | midnight | 5 hours   | Did part of assignment 1
