@@ -81,4 +81,11 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p8 {
+  use crate::list::linked_list::LinkedList;
+
+  /*
+  For any generic type,
+  For any three like-typed lists `xs, ys, zs`,
+  `conjoin(xs, zs) == conjoin(ys, zs)` implies that `xs == ys`
+  */
 }
