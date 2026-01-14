@@ -161,12 +161,12 @@ We need to have the following:
 - A function taking in two like-typed lists `a, b` and returning
   a new list containing all items of `a` followed by all items
   of `b`
-  - **We will call this `conjoin(a, b)`**
+  - **We will call this `append(a, b)`**
 
 From these, we need to prove that:
 - For any generic type:
 - For any three like-typed lists `xs, ys, zs`:
-- `conjoin(xs, zs) == conjoin(ys, zs)` implies that `xs == ys`
+- `append(xs, zs) == append(ys, zs)` implies that `xs == ys`
 
 A corresponding `rust` snippet is given below.
 
@@ -180,20 +180,20 @@ pub mod linked_list {
     Nil,
     /// A non-empty constructor which points to memory on the
     /// heap
-    Cons { head: T, tail: std::rc::Rc<LinkedList<T>> },
+    Cons { head: T, tail: Box<LinkedList<T>> },
   }
 
   /// Given two linked lists of similar type, return a new list
   /// containing the elements of the first (x) followed by the
   /// elements of the second (y).
-  pub fn conjoin<T>(
+  pub fn append<T>(
     x: LinkedList<T>,
     y: LinkedList<T>) -> LinkedList<T> where T: Clone {
     match x {
       LinkedList::Nil => y,
       LinkedList::Cons{head, tail} => LinkedList::Cons{
         head: head,
-        tail: std::rc::Rc::new(conjoin(
+        tail: Box::new(append(
           (*tail).clone(), y
         ))
       }
@@ -224,4 +224,134 @@ statement in `ravencheck` syntax.
 
 ## Expressing in `ravencheck`
 
+The first hurdle is "universally quantifying" (not really) over
+type parameters. My main resource here is `ravencheck`'s own
+[parametrized set example](https://github.com/cuplv/ravencheck/blob/main/examples/src/type_parameter_sets.rs),
+an excerpt of which is shown below.
+
+```rust
+#[ravencheck::check_module]
+#[declare_types(u32, HashSet<_>)]
+#[allow(dead_code)]
+mod my_mod {
+  use std::collections::HashSet;
+  use std::hash::Hash;
+
+  // ...
+
+  #[declare]
+  fn empty_poly<E: Eq + Hash>() -> HashSet<E> {
+    // ...
+  }
+
+  // ...
+
+  #[assume]
+  #[for_type(HashSet<E> => <E>)]
+  fn empty_no_member<E: Eq + Hash>() -> bool {
+    // ...
+  }
+
+  // ...
+}
+```
+
+Our implementation is given below.
+
+```rust
+#[ravencheck::check_module]
+#[declare_types(u32, LinkedList<_>)]
+#[allow(dead_code)]
+mod p8 {
+  use crate::list::linked_list::LinkedList;
+  use crate::list::linked_list::append;
+  use crate::list::linked_list::eq;
+
+  #[declare]
+  fn append_lists<T: Clone>(
+    x: LinkedList<T>,
+    y: LinkedList<T>) -> LinkedList<T> {
+    append(x, y)
+  }
+
+  #[declare]
+  fn lists_are_eq<T: Clone + PartialEq>(
+    x: LinkedList<T>,
+    y: LinkedList<T>) -> bool {
+    eq(x, y)
+  }
+
+  // For any generic type,
+  #[verify]
+  fn injectivity_of_append<T: Clone + PartialEq>() -> bool {
+    // For any three like-typed lists `xs, ys, zs`,
+    forall(|xs: LinkedList<T>,
+            ys: LinkedList<T>,
+            zs: LinkedList<T>| {
+      // append(xs, zs) == append(ys, zs) implies that xs == ys
+      implies(
+        lists_are_eq::<T>(
+          append_lists::<T>(xs, zs),
+          append_lists::<T>(ys, zs)
+        ),
+        lists_are_eq::<T>(xs, ys)
+      )
+    })
+  }
+}
+```
+
 ## Verification
+
+The following statement was found by the model checker to be
+SAT.
+
+```lisp
+(exists
+  (
+    (x_xs UI_LinkedList__UI_T__)
+    (x_ys UI_LinkedList__UI_T__)
+    (x_zs UI_LinkedList__UI_T__)
+  )
+  (exists
+    (
+      (xn_17
+        UI_LinkedList__UI_T__
+      )
+    )
+    (exists
+      (
+        (xn_18
+          UI_LinkedList__UI_T__
+        )
+      )
+      (and
+        (and
+          (and
+            (not
+              (F_lists_are_eq__UI_T__
+                x_xs
+                x_ys
+              )
+            )
+            (F_lists_are_eq__UI_T__
+              xn_18
+              xn_17
+            )
+          )
+          (F_append_lists__UI_T__
+            x_ys
+            x_zs
+            xn_17
+          )
+        )
+        (F_append_lists__UI_T__
+          x_xs
+          x_zs
+          xn_18
+        )
+      )
+    )
+  )
+)
+```

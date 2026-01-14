@@ -8,7 +8,8 @@ the course of the semester. This is an average of 5 hours per
 week. To ensure this is true, I am logging my hours here.
 
  Date    | Start    | End      | Total     | Description
----------|----------|----------|-----------|----------------------------------
+---------|----------|----------|-----------|-----------------------------------------
  1/8/26  | 7:30 PM  | 9:00 PM  | 1.5 hours | Initial repo setup
  1/10/26 | 3:30 PM  | 5:00 PM  | 3 hours   | Read up on SMT2, more repo setup
  1/13/26 | 10:00 PM | midnight | 5 hours   | Did part of assignment 1
+ 1/14/26 | 11:00 AM | noon     | 6 hours   | Added (broken) ravencheck wrapper on A1
