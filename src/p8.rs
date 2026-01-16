@@ -53,24 +53,18 @@ mod p8 {
     }
   }
 
-  #[assume]
-  fn data_eq_pres() -> bool {
-    forall(|a: LinkedList<T>, b: LinkedList<T>| {
-      implies(eq(a, b), data(&a) == data(&b))
-    })
-  }
-
   // Gets the node after the given node (or the nil node)
   #[declare]
-  fn next(cur: LinkedList<T>) -> LinkedList<T> {
+  fn next(cur: &LinkedList<T>) -> LinkedList<T> {
     match cur {
-      LinkedList::<T>::Cons{head: _, tail} => *tail,
+      LinkedList::<T>::Cons{head: _, tail} => *tail.clone(),
       _ => NIL
     }
   }
 
   // Wrapper for appendation, called "++" in the problem
-  // statement. Note: I've done some reformatting here
+  // statement. Note: I've done some reformatting here. This is
+  // push_back.
   #[define]
   #[recursive]
   fn append(x: LinkedList<T>, y: LinkedList<T>) -> LinkedList<T> {
@@ -79,7 +73,40 @@ mod p8 {
     } else if eq(&y, &NIL) {
       x
     } else {
-      cons(data(&x), append(next(x), y))
+      cons(data(&x), append(next(&x), y))
+    }
+  }
+
+  //////////////////////////////////////////////////////////////
+  // Helpers not implied by the problem statement
+
+  // A function that chops one item off the end of a list, then
+  // returns it. This is pop_back
+  #[define]
+  #[recursive]
+  fn chop(x: LinkedList<T>) -> LinkedList<T> {
+    if eq(&next(&x), &NIL) {
+      NIL
+    } else {
+      cons(data(&x), chop(next(&x)))
+    }
+  }
+
+  // Chops off as many nodes as are in to_remove. This doesn't
+  // check values, it basically treats to_remove as a Church
+  // numeral
+  #[define]
+  #[recursive]
+  fn unappend(x: LinkedList<T>, to_remove: LinkedList<T>) -> LinkedList<T> {
+    if eq(&next(&to_remove), &NIL) {
+      // No more to chop
+      x
+    } else {
+      // Chop 1
+      unappend(
+        chop(x),
+        next(&to_remove)
+      )
     }
   }
 
@@ -87,6 +114,18 @@ mod p8 {
   // Axioms
   // Note: Many of these are likely redundant. Hopefully none
   // are cheating.
+
+  #[assume]
+  #[for_inst(eq(x, y))]
+  #[for_inst(eq(chop(x), chop(y)))]
+  fn chopping_equality() -> bool {
+    forall(|x: LinkedList<T>, y: LinkedList<T>| {
+      implies(
+        eq(x, y),
+        eq(chop(x), chop(y))
+      )
+    })
+  }
 
   // eq is total
   #[assume]
@@ -197,6 +236,11 @@ mod p8 {
   }
 
   #[assume]
+  fn chop_nil() -> bool {
+    eq(chop(NIL), NIL)
+  }
+
+  #[assume]
   #[for_inst(cons(a, x))]
   #[for_inst(cons(b, x))]
   fn prepend() -> bool {
@@ -246,15 +290,96 @@ mod p8 {
     })
   }
 
+  #[assume]
+  #[for_inst(eq(chop(append(x, cons(a, NIL))), x))]
+  fn chop_append_relation() -> bool {
+    forall(|x: LinkedList<T>, a: T| {
+      eq(chop(append(x, cons(a, NIL))), x)
+    })
+  }
+
+  // Appending and then unappending preserves equality
+  #[assume]
+  fn append_unappend_relation() -> bool {
+    forall(|x: LinkedList<T>, y: LinkedList<T>| {
+      eq(
+        unappend(append(x, y), y),
+        x
+      )
+    })
+  }
+
+  // Unappending the same thing from equal lists preserves eq
+  // This should be implied by the definition of a function?
+  #[assume]
+  fn unappend_eq() -> bool {
+    forall(|x: LinkedList<T>, y: LinkedList<T>, z: LinkedList<T>| {
+      implies(
+        eq(x, y),
+        eq(unappend(x, z), unappend(y, z))
+      )
+    })
+  }
+
+  #[assume]
+  fn explicit_append_unappend() -> bool {
+    forall(|xs: LinkedList<T>, ys: LinkedList<T>, zs: LinkedList<T>| {
+      implies(
+        eq(
+          append(xs, zs),
+          append(ys, zs)
+        ),
+        eq(
+          unappend(append(xs, zs), zs),
+          unappend(append(ys, zs), zs)
+        )
+      )
+    })
+  }
+
+  #[assume]
+  fn explicit_append_unappend_2() -> bool {
+    forall(|xs: LinkedList<T>, ys: LinkedList<T>, zs: LinkedList<T>| {
+      implies(
+        eq(
+          unappend(append(xs, zs), zs),
+          unappend(append(ys, zs), zs)
+        ),
+        eq(
+          xs,
+          ys
+        )
+      )
+    })
+  }
+
   //////////////////////////////////////////////////////////////
   // The property we want to prove (injectivity)
 
-  #[verify]
+  /*
+  eq(
+    append(xs, zs),
+    append(ys, zs)
+  )
+  implies (by explicit_append_unappend)
+  eq(
+    unappend(append(xs, zs), zs),
+    unappend(append(ys, zs), zs)
+  )
+  implies (by explicit_append_unappend_2)
+  eq(
+    xs,
+    ys
+  )
+  */
+  #[annotate_multi]
+  #[for_values(xs: LinkedList<T>, ys: LinkedList<T>, zs: LinkedList<T>)]
+  #[for_call(append(xs, zs) => a)]
+  #[for_call(append(ys, zs) => b)]
   fn injectivity_of_append() -> bool {
-    forall(|xs: LinkedList<T>,
-            ys: LinkedList<T>,
-            zs: LinkedList<T>| {
-      implies(eq(append(xs, zs), append(ys, zs)), eq(xs, ys))
-    })
+    implies(
+      eq(a, b),
+      eq(xs, ys)
+    )
   }
 }
