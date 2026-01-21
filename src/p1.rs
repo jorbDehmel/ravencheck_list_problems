@@ -78,6 +78,7 @@ mod p1 {
 
   //////////////////////////////////////////////////////////////
 
+  // This introduces a sort cycle
   #[define]
   #[recursive]
   fn interleave(x: LinkedList<T>, y: LinkedList<T>) -> LinkedList<T> {
@@ -88,32 +89,64 @@ mod p1 {
     }
   }
 
-  // #[define]
-  // #[recursive]
-  // fn evens(x: LinkedList<T>) -> LinkedList<T> {
-  //   if eq(&x, &NIL) {
-  //     x
-  //   } else {
-  //     cons(data(&x), odds(next(&x)))
-  //   }
-  // }
+  // This introduces a sort cycle, and must be defined
+  // co-recursively anyway. Therefore, I will axiomitize it.
+  #[declare]
+  fn evens(x: LinkedList<T>) -> LinkedList<T> {
+    if eq(&x, &NIL) {
+      x
+    } else {
+      cons(data(&x), odds(next(&x)))
+    }
+  }
 
-  // #[define]
-  // #[recursive]
-  // fn odds(x: LinkedList<T>) -> LinkedList<T> {
-  //   if eq(&x, &NIL) {
-  //     x
-  //   } else {
-  //     evens(next(&x))
-  //   }
-  // }
+  #[declare]
+  fn odds(x: LinkedList<T>) -> LinkedList<T> {
+    if eq(&x, &NIL) {
+      x
+    } else {
+      evens(next(&x))
+    }
+  }
+
+  //////////////////////////////////////////////////////////////
+  // Axiomitization of "evens" and "odds"
+
+  // If this doesn't work, we may have to fully relation-ify
+  // the functions
+  #[assume]
+  fn a1() -> bool {
+    // From "evens"
+    forall(|x: LinkedList<T>| {
+      if eq(&x, &NIL) {
+        eq(x, evens(x))
+      } else {
+        eq(evens(x), cons(data(&x), odds(next(&x))))
+      }
+    })
+    &&
+    // From "odds"
+    forall(|x: LinkedList<T>| {
+      if eq(&x, &NIL) {
+        eq(x, odds(x))
+      } else {
+        eq(odds(x), evens(next(&x)))
+      }
+    })
+  }
 
   //////////////////////////////////////////////////////////////
   // To prove
 
-  // #[annotate_multi]
-  // #[for_values(xs: LinkedList<T>)]
-  // fn to_prove() -> bool {
-  //   eq(interleave(evens(xs), odds(xs)), xs)
-  // }
+  #[annotate_multi]
+  #[for_values(xs: LinkedList<T>)]
+  fn to_prove() -> bool {
+    eq(
+      interleave(
+        evens(xs),
+        odds(xs)
+      ),
+      xs
+    )
+  }
 }
