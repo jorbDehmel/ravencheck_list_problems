@@ -5,6 +5,8 @@ Jordan Dehmel
 
 Due no later than 11:59 PM on Friday, January 16, 2026
 
+**Note:** This was updated Jan 22, 2026,
+
 ## Choice of first benchmark
 
 From a cursory glance, problem 8 (AKA `list_append_inj_1.smt2`)
@@ -168,208 +170,97 @@ From these, we need to prove that:
 - For any three like-typed lists `xs, ys, zs`:
 - `append(xs, zs) == append(ys, zs)` implies that `xs == ys`
 
-A corresponding `rust` snippet is given below.
+## Expressing in `ravencheck`
+
+The following expresses the `LinkedList` type, **without** a
+type parameter. It does include the `append` function. Note
+that all these function signatures are perfectly fine with
+respect to sort cycles: They would need to be quantified for
+that to be an issue.
 
 ```rust
 /// A module exposing an axiomitized generic linked list
+#[ravencheck::export_module]
+#[allow(dead_code)]
 pub mod linked_list {
-  /// A generic linked list
-  #[derive(Clone)]
-  #[derive(PartialEq)]
-  pub enum LinkedList<T: Clone + PartialEq + fmt::Display> {
-    /// The end-of-list / empty-list constructor
-    Nil,
-    /// A non-empty constructor which points to memory on the
-    /// heap
-    Cons { head: T, tail: Box<LinkedList<T>> },
-  }
-}
-```
-
-The functions operating on this struct will be axiomitized
-later. Now we just need to figure out how to encode our "prove"
-statement in `ravencheck` syntax.
-
-## Expressing in `ravencheck`
-
-The first hurdle is "universally quantifying" (not really) over
-type parameters. My main resource here is `ravencheck`'s own
-[parametrized set example](https://github.com/cuplv/ravencheck/blob/main/examples/src/type_parameter_sets.rs),
-an excerpt of which is shown below.
-
-```rust
-#[ravencheck::check_module]
-#[declare_types(u32, HashSet<_>)]
-#[allow(dead_code)]
-mod my_mod {
-  use std::collections::HashSet;
-  use std::hash::Hash;
-
-  // ...
-
-  #[declare]
-  fn empty_poly<E: Eq + Hash>() -> HashSet<E> {
-    // ...
-  }
-
-  // ...
-
-  #[assume]
-  #[for_type(HashSet<E> => <E>)]
-  fn empty_no_member<E: Eq + Hash>() -> bool {
-    // ...
-  }
-
-  // ...
-}
-```
-
-A simpler solution also presented in the documentation is to
-simply alias `u32` (or something else) to a "generic" type, in
-which case `ravencheck` will leave it uninterpreted. We will do
-this latter method. Our implementation is given below.
-
-```rust
-#[ravencheck::check_module]
-#[declare_types(LinkedList<_>, u32)]
-#[allow(dead_code)]
-mod p8 {
-  // Import the enum we are examining
-  use crate::list::linked_list::LinkedList;
-
   // Make an UNINTERPRETED datatype
   #[declare]
   type T = u32;
 
-  // Returned when we try to access a null cons's data
-  #[declare]
-  const NULL: T = 0;
-
-  #[declare]
-  const NIL: LinkedList<T> = LinkedList::<T>::Nil{};
-
-  //////////////////////////////////////////////////////////////
-  // Relations
+  /// A generic linked list
+  #[define]
+  pub enum LinkedList {
+    /// The end-of-list / empty-list constructor
+    Nil,
+    /// A non-empty constructor which points to memory on the
+    /// heap
+    Cons(T, Box<LinkedList>),
+  }
 
   #[define]
-  #[total]
-  fn eq(a: &LinkedList<T>, b: &LinkedList<T>) -> bool {
-    a == b
-  }
-
-  // This is safe from sort cycles
-  #[declare]
-  #[total]
-  fn data(cur: &LinkedList<T>) -> T {
-    match cur {
-      LinkedList::<T>::Cons{head, tail: _} => *head,
-      _ => NULL
+  #[recursive]
+  fn interleave(x: LinkedList, y: LinkedList) -> LinkedList {
+    match x {
+      LinkedList::Nil => y,
+      LinkedList::Cons(z, xs) =>
+        LinkedList::Cons(z, Box::new(interleave(y, *xs)))
     }
   }
 
-  #[declare]
-  #[total]
-  fn is_next(cur: &LinkedList<T>,
-             candidate: LinkedList<T>) -> bool {
-    match cur {
-      LinkedList::<T>::Cons{head: _, tail} =>
-        eq(&*tail, &candidate),
-      _ => eq(&NIL, &candidate)
+  #[define]
+  #[recursive]
+  fn append(x: LinkedList, y: LinkedList) -> LinkedList {
+    match x {
+      LinkedList::Nil => y,
+      LinkedList::Cons(z, xs) => LinkedList::Cons(z, Box::new(append(*xs, y)))
     }
-  }
-
-  //////////////////////////////////////////////////////////////
-  // Appendation
-
-  #[declare]
-  fn is_appendation(x: LinkedList<T>, y: LinkedList<T>,
-                    z: LinkedList<T>) -> bool {
-    if data(&x) != data(&z) {
-      false
-    } else {
-      match x {
-        LinkedList::<T>::Cons{tail: x_next, ..} => match z {
-          LinkedList::<T>::Cons{tail: z_next, ..} =>
-            is_appendation(
-              *x_next, y, *z_next
-            ),
-          _ => false
-        },
-        _ => eq(&z, &NIL)
-      }
-    }
-  }
-
-  // (a ++ b == d) and (a ++ c == d) iff b == c
-  #[assume]
-  fn appendation_axiom() -> bool {
-    forall(|a: LinkedList<T>, b: LinkedList<T>,
-            c: LinkedList<T>, d: LinkedList<T>| {
-      implies(
-        is_appendation(a, b, d) && is_appendation(a, c, d),
-        b == c
-      ) && implies(
-        b == c,
-        is_appendation(a, b, d) && is_appendation(a, c, d)
-      )
-    })
-  }
-
-  //////////////////////////////////////////////////////////////
-  // WTS
-
-  #[annotate_multi]
-  #[for_values(xs: LinkedList<T>, ys: LinkedList<T>,
-               zs: LinkedList<T>, a: LinkedList<T>,
-               b: LinkedList<T>)]
-  fn injectivity_of_append() -> bool {
-    implies(
-      is_appendation(xs, zs, a) &&
-      is_appendation(ys, zs, b) &&
-      eq(a, b),
-      eq(xs, ys)
-    )
   }
 }
 ```
-
-`is_next` and `is_appendation` needed to be formulated as
-relations explicitly in order to avoid sort cycles: Much
-debugging time was spent figuring this out. Once they were
-correctly formulated, only a single appendation axiom was
-needed.
 
 ## Verification
 
-After relation-izing the operations and adding our axiom,
-problem 8 verified in 0.05 seconds.
-
-![`p8` verified](p8_verification.png)
-
-Since problem 9 is nearly identical to problem 8, I copied over
-the axioms and added the corresponding `verify` function.
+Problem 8 ended up requiring further axiomitization: However,
+problem 9 (`list_append_inj_2`) was immediately verifiable.
 
 ```rust
-// ... same as p8
+// /*
+// ; Injectivity of append
+// (declare-datatype
+//   list (par (a) ((nil) (cons (head a) (tail (list a))))))
+// (define-fun-rec
+//   ++
+//   (par (a) (((x (list a)) (y (list a))) (list a)))
+//   (match x
+//     ((nil y)
+//      ((cons z xs) (cons z (++ xs y))))))
+// (prove
+//   (par (a)
+//     (forall ((xs (list a)) (ys (list a)) (zs (list a)))
+//       (=> (= (++ xs ys) (++ xs zs)) (= ys zs)))))
+// */
 
-#[annotate_multi]
-#[for_values(xs: LinkedList<T>, ys: LinkedList<T>,
-             zs: LinkedList<T>, a: LinkedList<T>,
-             b: LinkedList<T>)]
-fn injectivity_of_append_2() -> bool {
-  implies(
-    is_appendation(xs, ys, a) &&
-    is_appendation(xs, zs, b) &&
-    eq(a, b),
-    eq(ys, zs)
-  )
+#[ravencheck::check_module]
+#[allow(dead_code)]
+#[allow(unused_imports)]
+mod p9 {
+  #[import]
+  use crate::list::linked_list::*;
+
+  #[annotate_multi]
+  #[for_values(xs: LinkedList, ys: LinkedList, zs: LinkedList)]
+  #[for_call(append(xs, ys) => a)]
+  #[for_call(append(xs, zs) => b)]
+  fn injectivity_of_append_2() -> bool {
+    implies(
+      a == b,
+      ys == zs
+    )
+  }
 }
 
-// ...
 ```
 
-Problem 9 unexpectedly also verified with no additional work!
-
-![In solving `p8`, we got `p9` for free!](p9_verification.png)
-
-We now have 2 of the 46 problems done.
+Note that **all** function calls must be given in `for_call`
+annotations, and that the return values of these statements do
+**not** need to be quantified via `for_values`.
