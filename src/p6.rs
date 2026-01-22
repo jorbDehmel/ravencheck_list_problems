@@ -1,6 +1,5 @@
-// ./problems/list_SelectPermutations'.smt2
-
 /*
+// ./problems/list_SelectPermutations'.smt2
 (declare-datatype
   pair (par (a b) ((pair2 (proj1-pair a) (proj2-pair b)))))
 (declare-datatype
@@ -48,5 +47,8 @@
 
 #[ravencheck::check_module]
 #[allow(dead_code)]
+#[allow(unused_imports)]
 mod p6 {
+  #[import]
+  use crate::list::linked_list::*;
 }

@@ -29,124 +29,36 @@
 */
 
 #[ravencheck::check_module]
-#[declare_types(LinkedList<_>, u32)]
 #[allow(dead_code)]
+#[allow(unused_imports)]
 mod p1 {
-  // Import the enum we are examining
-  use crate::list::linked_list::LinkedList;
+  #[import]
+  use crate::list::linked_list::*;
 
-  // Make an UNINTERPRETED datatype
-  #[declare]
-  type T = u32;
-
-  // Returned when we try to access a null cons's data
-  #[declare]
-  const NULL: T = 0;
-
-  #[declare]
-  const NIL: LinkedList<T> = LinkedList::<T>::Nil{};
-
-  // Wraps equality for nodes
-  #[define]
-  fn eq(a: &LinkedList<T>, b: &LinkedList<T>) -> bool {
-    a == b
-  }
-
-  // Wrapper for nonempty list constructor
-  #[declare]
-  fn cons(head: T, tail: LinkedList<T>) -> LinkedList<T> {
-    LinkedList::<T>::Cons{head: head, tail: Box::new(tail)}
-  }
-
-  // Gets the data from the given node (or null if nil)
-  #[declare]
-  fn data(cur: &LinkedList<T>) -> T {
-    match cur {
-      LinkedList::<T>::Cons{head, tail: _} => *head,
-      _ => NULL
-    }
-  }
-
-  // Gets the node after the given node (or the nil node)
-  #[declare]
-  fn next(cur: &LinkedList<T>) -> LinkedList<T> {
-    match cur {
-      LinkedList::<T>::Cons{head: _, tail} => *tail.clone(),
-      _ => NIL
-    }
-  }
-
-  //////////////////////////////////////////////////////////////
-
-  // This introduces a sort cycle
   #[define]
   #[recursive]
-  fn interleave(x: LinkedList<T>, y: LinkedList<T>) -> LinkedList<T> {
-    if eq(&x, &NIL) {
-      y
-    } else {
-      cons(data(&x), interleave(y, next(&x)))
+  fn evens(x: LinkedList) -> LinkedList {
+    match x {
+      LinkedList::Nil => LinkedList::Nil,
+      LinkedList::Cons(y, xs) => LinkedList::Cons(y, Box::new(odds(*xs)))
     }
   }
 
-  // This introduces a sort cycle, and must be defined
-  // co-recursively anyway. Therefore, I will axiomitize it.
-  #[declare]
-  fn evens(x: LinkedList<T>) -> LinkedList<T> {
-    if eq(&x, &NIL) {
-      x
-    } else {
-      cons(data(&x), odds(next(&x)))
+  #[define]
+  #[recursive]
+  fn odds(x: LinkedList) -> LinkedList {
+    match x {
+      LinkedList::Nil => LinkedList::Nil,
+      LinkedList::Cons(_, xs) => evens(*xs)
     }
   }
-
-  #[declare]
-  fn odds(x: LinkedList<T>) -> LinkedList<T> {
-    if eq(&x, &NIL) {
-      x
-    } else {
-      evens(next(&x))
-    }
-  }
-
-  //////////////////////////////////////////////////////////////
-  // Axiomitization of "evens" and "odds"
-
-  // If this doesn't work, we may have to fully relation-ify
-  // the functions
-  #[assume]
-  fn a1() -> bool {
-    // From "evens"
-    forall(|x: LinkedList<T>| {
-      if eq(&x, &NIL) {
-        eq(x, evens(x))
-      } else {
-        eq(evens(x), cons(data(&x), odds(next(&x))))
-      }
-    })
-    &&
-    // From "odds"
-    forall(|x: LinkedList<T>| {
-      if eq(&x, &NIL) {
-        eq(x, odds(x))
-      } else {
-        eq(odds(x), evens(next(&x)))
-      }
-    })
-  }
-
-  //////////////////////////////////////////////////////////////
-  // To prove
 
   #[annotate_multi]
-  #[for_values(xs: LinkedList<T>)]
+  #[for_values(xs: LinkedList)]
+  #[for_call(evens(xs) => a)]
+  #[for_call(odds(xs) => b)]
+  #[for_call(interleave(a, b) => c)]
   fn to_prove() -> bool {
-    eq(
-      interleave(
-        evens(xs),
-        odds(xs)
-      ),
-      xs
-    )
+    c == xs
   }
 }

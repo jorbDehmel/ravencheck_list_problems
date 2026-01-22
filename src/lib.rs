@@ -1,7 +1,9 @@
 pub mod list;
+pub mod pair;
+pub mod nat;
 
 pub mod p1;
-pub mod p2;
+// pub mod p2;
 pub mod p3;
 pub mod p4;
 pub mod p5;

@@ -47,7 +47,65 @@
           (evens xs))))))
 */
 
+// NOTE: There is no definition for 'mod' built-in, so I added
+// the 'is_even' fn on Nats
+
 #[ravencheck::check_module]
 #[allow(dead_code)]
+#[allow(unused_imports)]
 mod p2 {
+  #[import]
+  use crate::list::linked_list::*;
+
+  #[import]
+  use crate::pair::pair::*;
+
+  #[import]
+  use crate::nat::nat::*;
+
+  #[define]
+  #[recursive]
+  fn pairs<B>(x: LinkedList<B>) -> LinkedList<Pair<B, B>> {
+    match x {
+      Nil => Nil,
+      Cons(y, z) => match z {
+        Nil => Nil,
+        Cons(y2, xs) => Cons(Pair2(y, y2), pairs(xs))
+      }
+    }
+  }
+
+  #[define]
+  #[recursive]
+  fn map<A, B>(f: Fn(A) -> B, x: List<A>) -> List<B> {
+    match x {
+      Nil => Nil,
+      Cons(y, xs) => Cons(f(y), map(f, xs))
+    }
+  }
+
+  #[define]
+  #[recursive]
+  fn length<A>(x: LinkedList<A>) -> Nat {
+    match x {
+      LinkedList::<A>::Nil => Nat::Z,
+      LinkedList::<A>::Cons(_, l) => Nat::S(Box::new(Nat::S(l)))
+    }
+  }
+
+  #[verify]
+  #[for_values(x: LinkedList<A>)]
+  fn pair_evens() -> bool {
+    implies(
+      is_even(length(xs)),
+      map(
+        |x: Pair<A, A>| {
+          match x {
+            Pair::<A, A>::Pair2(y, z) => y
+          }
+        },
+        pairs(xs)
+      ) == evens(xs)
+    )
+  }
 }
