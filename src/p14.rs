@@ -26,4 +26,8 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p14 {
+  #[import]
+  use crate::list::linked_list::*;
+
+  // This is the same as 29, but with integers instead of nats
 }

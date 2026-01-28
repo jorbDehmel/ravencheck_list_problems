@@ -16,7 +16,20 @@
       (=> (= (++ xs zs) (++ ys zs)) (= xs ys)))))
 */
 
+// Note: I think this is a duplicate of p8
+
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p25 {
+  #[import]
+  use crate::list::linked_list::*;
+
+  #[annotate_multi]
+  #[for_values(xs: LinkedList, ys: LinkedList, zs: LinkedList)]
+  fn foo() -> bool {
+    implies(
+      append(xs, zs) == append(ys, zs),
+      xs == ys
+    )
+  }
 }

@@ -20,3 +20,5 @@ week. To ensure this is true, I am logging my hours here.
  1/21/26 | 12:15 PM | 12:45 PM | 14.5 hours | Worked on p1
  1/21/26 | 2:30 PM  | 3:30 PM  | 15.5 hours | Meetings
  1/22/26 | 12:00 PM | 1:30 PM  | 17 hours   | Worked on p1, p2. Added pairs and nats.
+ 1/27/26 | 8:00 PM  | 8:30 PM  | 18.5 hours | Worked on p8
+ 1/27/26 | 10:45 PM | 12:45 AM | 20.5 hours | Worked on p29, flagged major issues

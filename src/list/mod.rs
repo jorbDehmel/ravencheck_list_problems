@@ -4,10 +4,11 @@
 pub mod linked_list {
   // Make an UNINTERPRETED datatype
   #[declare]
-  type T = u32;
+  pub type T = u32;
 
   /// A generic linked list
   #[define]
+  #[derive(PartialEq)]
   pub enum LinkedList {
     /// The end-of-list / empty-list constructor
     Nil,
@@ -32,6 +33,18 @@ pub mod linked_list {
     match x {
       LinkedList::Nil => y,
       LinkedList::Cons(z, xs) => LinkedList::Cons(z, Box::new(append(*xs, y)))
+    }
+  }
+
+  #[declare]
+  pub const UNDEFINED: T = 0;
+
+  #[define]
+  #[recursive]
+  fn elem(x: T, y: LinkedList) -> bool {
+    match y {
+      LinkedList::Nil => false,
+      LinkedList::Cons(z, xs) => z == x || elem(x, *xs)
     }
   }
 }

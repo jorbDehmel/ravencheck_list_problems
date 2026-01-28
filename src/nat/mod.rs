@@ -4,7 +4,7 @@
 #[allow(dead_code)]
 pub mod nat {
   #[define]
-  enum Nat {
+  pub enum Nat {
     Z,
     S(Box<Nat>)
   }
