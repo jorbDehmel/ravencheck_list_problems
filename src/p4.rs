@@ -38,4 +38,62 @@
 mod p4 {
   #[import]
   use crate::list::linked_list::*;
+
+  #[import]
+  use crate::nat::nat::*;
+
+  #[define]
+  pub enum Pair {
+    Pair2(T, T)
+  }
+
+  #[define]
+  pub enum LinkedListOfPairs {
+    Nil,
+    Cons(Pair, Box<LinkedListOfPairs>)
+  }
+
+  #[define]
+  #[recursive]
+  fn pairs(x: LinkedList) -> LinkedListOfPairs {
+    match x {
+      LinkedList::Nil => LinkedListOfPairs::Nil,
+      LinkedList::Cons(y, z) => match *z {
+        LinkedList::Nil => LinkedListOfPairs::Nil,
+        LinkedList::Cons(y2, xs) => LinkedListOfPairs::Cons(
+          Pair::Pair2(y, y2),
+          Box::new(
+            pairs(*xs)
+          )
+        )
+      }
+    }
+  }
+
+  #[define]
+  #[recursive]
+  fn unpair(x: LinkedListOfPairs) -> LinkedList {
+    match x {
+      LinkedListOfPairs::Nil => LinkedList::Nil,
+      LinkedListOfPairs::Cons(y, xys) => match y {
+        Pair::Pair2(z, y2) => LinkedList::Cons(
+          z,
+          Box::new(LinkedList::Cons(y2, Box::new(unpair(*xys))))
+        )
+      }
+    }
+  }
+
+  #[annotate_multi]
+  #[for_values(xs: LinkedList)]
+  #[for_call(length(xs) => xs_len)]
+  #[for_call(is_even(xs_len) => a)]
+  #[for_call(pairs(xs) => xs_pairs)]
+  #[for_call(unpair(xs_pairs) => b)]
+  fn foo() -> bool {
+    implies(
+      a,
+      b == xs
+    )
+  }
 }

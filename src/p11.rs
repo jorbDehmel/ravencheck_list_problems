@@ -47,11 +47,11 @@ mod p11 {
     (match x
       ((nil (_ nil b))
       ((cons y xs) (cons (@ f y) (map f xs))))))
-  */
-  #[define]
-  #[recursive]
-  fn map<A, B>(f: fn(A) -> B, x: LinkedList<A>) -> LinkedList<B> {
-  }
+  // */
+  // #[define]
+  // #[recursive]
+  // fn map<A, B>(f: fn(A) -> B, x: LinkedList<A>) -> LinkedList<B> {
+  // }
 
   /*
   (define-fun-rec

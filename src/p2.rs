@@ -58,19 +58,30 @@ mod p2 {
   use crate::list::linked_list::*;
 
   #[import]
-  use crate::pair::pair::*;
-
-  #[import]
   use crate::nat::nat::*;
 
   #[define]
+  pub enum Pair {
+    Pair2(T, T)
+  }
+
+  #[define]
+  pub enum LinkedListOfPairs {
+    Nil,
+    Cons(Pair, Box<LinkedListOfPairs>)
+  }
+
+  #[define]
   #[recursive]
-  fn pairs<B>(x: LinkedList<B>) -> LinkedList<Pair<B, B>> {
+  fn pairs(x: LinkedList) -> LinkedListOfPairs {
     match x {
-      Nil => Nil,
-      Cons(y, z) => match z {
-        Nil => Nil,
-        Cons(y2, xs) => Cons(Pair2(y, y2), pairs(xs))
+      LinkedList::Nil => Nil,
+      LinkedList::Cons(y, z) => match z {
+        LinkedList::Nil => Nil,
+        LinkedList::Cons(y2, xs) => LinkedListOfPairs::Cons(
+          Pair::Pair2(y, y2),
+          pairs(xs)
+        )
       }
     }
   }
@@ -86,22 +97,22 @@ mod p2 {
 
   #[define]
   #[recursive]
-  fn length<A>(x: LinkedList<A>) -> Nat {
+  fn length(x: LinkedList) -> Nat {
     match x {
-      LinkedList::<A>::Nil => Nat::Z,
-      LinkedList::<A>::Cons(_, l) => Nat::S(Box::new(Nat::S(l)))
+      LinkedList::Nil => Nat::Z,
+      LinkedList::Cons(data, l) => Nat::S(Box::new(Nat::S(l)))
     }
   }
 
   #[verify]
-  #[for_values(x: LinkedList<A>)]
+  #[for_values(xs: LinkedList)]
   fn pair_evens() -> bool {
     implies(
       is_even(length(xs)),
       map(
-        |x: Pair<A, A>| {
+        |x: Pair| {
           match x {
-            Pair::<A, A>::Pair2(y, z) => y
+            Pair::Pair2(y, z) => y
           }
         },
         pairs(xs)
