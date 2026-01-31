@@ -40,7 +40,10 @@ mod p1 {
   fn evens(x: LinkedList) -> LinkedList {
     match x {
       LinkedList::Nil => LinkedList::Nil,
-      LinkedList::Cons(y, xs) => LinkedList::Cons(y, Box::new(odds(*xs)))
+      LinkedList::Cons(y, xs) => LinkedList::Cons(
+        y,
+        Box::new(odds(*xs))
+      )
     }
   }
 

@@ -40,4 +40,38 @@
 mod p5 {
   #[import]
   use crate::list::linked_list::*;
+
+  /*
+  (define-fun-rec
+    select
+    (par (a)
+      (((x a) (y (list (pair a (list a))))) (list (pair a (list a)))))
+    (match y
+      ((nil (_ nil (pair a (list a))))
+      ((cons z x2)
+        (match z
+          (((pair2 y2 ys) (cons (pair2 y2 (cons x ys)) (select x x2)))))))))
+  */
+
+  /*
+  (define-fun-rec
+    select2
+    (par (a) (((x (list a))) (list (pair a (list a)))))
+    (match x
+      ((nil (_ nil (pair a (list a))))
+      ((cons y xs) (cons (pair2 y xs) (select y (select2 xs)))))))
+  */
+
+  #[annotate_multi]
+  #[for_values(xs: linked_list)]
+  fn list_select() -> bool {
+    map(
+      |x: PairTLinkedList| {
+        match x {
+          PairTLinkedList::Pair2(y, z) => y
+        }
+      },
+      select2(xs)
+    ) == xs
+  }
 }

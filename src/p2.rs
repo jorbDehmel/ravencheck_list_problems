@@ -75,12 +75,12 @@ mod p2 {
   #[recursive]
   fn pairs(x: LinkedList) -> LinkedListOfPairs {
     match x {
-      LinkedList::Nil => Nil,
-      LinkedList::Cons(y, z) => match z {
-        LinkedList::Nil => Nil,
+      LinkedList::Nil => LinkedListOfPairs::Nil,
+      LinkedList::Cons(y, z) => match *z {
+        LinkedList::Nil => LinkedListOfPairs::Nil,
         LinkedList::Cons(y2, xs) => LinkedListOfPairs::Cons(
           Pair::Pair2(y, y2),
-          pairs(xs)
+          Box::new(pairs(*xs))
         )
       }
     }
@@ -88,10 +88,13 @@ mod p2 {
 
   #[define]
   #[recursive]
-  fn map<A, B>(f: Fn(A) -> B, x: List<A>) -> List<B> {
+  fn map(f: fn(Pair) -> T, x: LinkedListOfPairs) -> LinkedList {
     match x {
-      Nil => Nil,
-      Cons(y, xs) => Cons(f(y), map(f, xs))
+      LinkedListOfPairs::Nil => LinkedList::Nil,
+      LinkedListOfPairs::Cons(y, xs) => LinkedList::Cons(
+        f(y),
+        Box::new(map(f, *xs))
+      )
     }
   }
 
@@ -100,23 +103,48 @@ mod p2 {
   fn length(x: LinkedList) -> Nat {
     match x {
       LinkedList::Nil => Nat::Z,
-      LinkedList::Cons(data, l) => Nat::S(Box::new(Nat::S(l)))
+      LinkedList::Cons(_data, l) => Nat::S(Box::new(length(*l)))
     }
   }
 
-  #[verify]
+  #[define]
+  #[recursive]
+  fn evens(x: LinkedList) -> LinkedList {
+    match x {
+      LinkedList::Nil => LinkedList::Nil,
+      LinkedList::Cons(y, xs) => LinkedList::Cons(
+        y,
+        Box::new(odds(*xs))
+      )
+    }
+  }
+
+  #[define]
+  #[recursive]
+  fn odds(x: LinkedList) -> LinkedList {
+    match x {
+      LinkedList::Nil => LinkedList::Nil,
+      LinkedList::Cons(_, xs) => evens(*xs)
+    }
+  }
+
+  #[annotate_multi]
   #[for_values(xs: LinkedList)]
+  #[for_call(length(xs) => xs_length)]
+  #[for_call(is_even(xs_length) => xs_len_even)]
+  #[for_call(evens(xs) => xs_evens)]
+  #[for_call(pairs(xs) => xs_pairs)]
   fn pair_evens() -> bool {
     implies(
-      is_even(length(xs)),
+      xs_len_even,
       map(
         |x: Pair| {
           match x {
             Pair::Pair2(y, z) => y
           }
         },
-        pairs(xs)
-      ) == evens(xs)
+        xs_pairs
+      ) == xs_evens
     )
   }
 }
