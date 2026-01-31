@@ -114,7 +114,12 @@ mod p2 {
       LinkedList::Nil => LinkedList::Nil,
       LinkedList::Cons(y, xs) => LinkedList::Cons(
         y,
-        Box::new(odds(*xs))
+        Box::new(
+          match *xs {
+            LinkedList::Nil => LinkedList::Nil,
+            LinkedList::Cons(_data, xss) => evens(*xss)
+          }
+        )
       )
     }
   }
@@ -124,27 +129,30 @@ mod p2 {
   fn odds(x: LinkedList) -> LinkedList {
     match x {
       LinkedList::Nil => LinkedList::Nil,
-      LinkedList::Cons(_, xs) => evens(*xs)
+      LinkedList::Cons(_data, xs) => evens(*xs)
     }
   }
 
   #[annotate_multi]
-  #[for_values(xs: LinkedList)]
+  #[for_values(xs: LinkedList, aux_len: Nat)]
   #[for_call(length(xs) => xs_length)]
-  #[for_call(is_even(xs_length) => xs_len_even)]
+  #[for_call(is_even(aux_len) => xs_len_even)]
   #[for_call(evens(xs) => xs_evens)]
   #[for_call(pairs(xs) => xs_pairs)]
   fn pair_evens() -> bool {
     implies(
-      xs_len_even,
-      map(
-        |x: Pair| {
-          match x {
-            Pair::Pair2(y, z) => y
-          }
-        },
-        xs_pairs
-      ) == xs_evens
+      xs_length == aux_len,
+      implies(
+        xs_len_even,
+        map(
+          |x: Pair| {
+            match x {
+              Pair::Pair2(y, z) => y
+            }
+          },
+          xs_pairs
+        ) == xs_evens
+      )
     )
   }
 }

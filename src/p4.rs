@@ -78,22 +78,36 @@ mod p4 {
       LinkedListOfPairs::Cons(y, xys) => match y {
         Pair::Pair2(z, y2) => LinkedList::Cons(
           z,
-          Box::new(LinkedList::Cons(y2, Box::new(unpair(*xys))))
+          Box::new(
+            LinkedList::Cons(y2, Box::new(unpair(*xys)))
+          )
         )
       }
     }
   }
 
+  #[define]
+  #[recursive]
+  fn length(x: LinkedList) -> Nat {
+    match x {
+      LinkedList::Nil => Nat::Z,
+      LinkedList::Cons(_data, l) => Nat::S(Box::new(length(*l)))
+    }
+  }
+
   #[annotate_multi]
-  #[for_values(xs: LinkedList)]
+  #[for_values(xs: LinkedList, xs_pairs_aux: LinkedListOfPairs, xs_len_aux: Nat)]
   #[for_call(length(xs) => xs_len)]
-  #[for_call(is_even(xs_len) => a)]
+  #[for_call(is_even(xs_len_aux) => a)]
   #[for_call(pairs(xs) => xs_pairs)]
-  #[for_call(unpair(xs_pairs) => b)]
-  fn foo() -> bool {
+  #[for_call(unpair(xs_pairs_aux) => b)]
+  fn pair_unpair() -> bool {
     implies(
-      a,
-      b == xs
+      xs_len == xs_len_aux && xs_pairs == xs_pairs_aux,
+      implies(
+        a,
+        b == xs
+      )
     )
   }
 }

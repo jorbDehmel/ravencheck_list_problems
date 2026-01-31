@@ -103,7 +103,13 @@ mod p3 {
       LinkedList::Nil => LinkedList::Nil,
       LinkedList::Cons(y, xs) => LinkedList::Cons(
         y,
-        Box::new(odds(*xs))
+        Box::new(
+          // This is just odds(*xs)
+          match *xs {
+            LinkedList::Nil => LinkedList::Nil,
+            LinkedList::Cons(_data, xss) => evens(*xss)
+          }
+        )
       )
     }
   }
@@ -113,7 +119,7 @@ mod p3 {
   fn odds(x: LinkedList) -> LinkedList {
     match x {
       LinkedList::Nil => LinkedList::Nil,
-      LinkedList::Cons(_, xs) => evens(*xs)
+      LinkedList::Cons(_data, xs) => evens(*xs)
     }
   }
 

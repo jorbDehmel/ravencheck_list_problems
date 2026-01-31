@@ -42,7 +42,12 @@ mod p1 {
       LinkedList::Nil => LinkedList::Nil,
       LinkedList::Cons(y, xs) => LinkedList::Cons(
         y,
-        Box::new(odds(*xs))
+        Box::new(
+          match *xs {
+            LinkedList::Nil => LinkedList::Nil,
+            LinkedList::Cons(_data, xss) => evens(*xss)
+          }
+        )
       )
     }
   }
@@ -52,16 +57,19 @@ mod p1 {
   fn odds(x: LinkedList) -> LinkedList {
     match x {
       LinkedList::Nil => LinkedList::Nil,
-      LinkedList::Cons(_, xs) => evens(*xs)
+      LinkedList::Cons(_data, xs) => evens(*xs)
     }
   }
 
   #[annotate_multi]
-  #[for_values(xs: LinkedList)]
-  #[for_call(evens(xs) => a)]
-  #[for_call(odds(xs) => b)]
-  #[for_call(interleave(a, b) => c)]
-  fn to_prove() -> bool {
-    c == xs
+  #[for_values(xs: LinkedList, aux1: LinkedList, aux2: LinkedList)]
+  #[for_call(evens(xs) => evens_xs)]
+  #[for_call(odds(xs) => odds_xs)]
+  #[for_call(interleave(aux1, aux2) => interleaved)]
+  fn list_interleave() -> bool {
+    implies(
+      aux1 == evens_xs && aux2 == odds_xs,
+      interleaved == xs
+    )
   }
 }
