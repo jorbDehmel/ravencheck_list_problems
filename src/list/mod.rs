@@ -19,7 +19,7 @@ pub mod linked_list {
 
   #[define]
   #[recursive]
-  fn interleave(x: LinkedList, y: LinkedList) -> LinkedList {
+  pub fn interleave(x: LinkedList, y: LinkedList) -> LinkedList {
     match x {
       LinkedList::Nil => y,
       LinkedList::Cons(z, xs) =>
@@ -29,7 +29,7 @@ pub mod linked_list {
 
   #[define]
   #[recursive]
-  fn append(x: LinkedList, y: LinkedList) -> LinkedList {
+  pub fn append(x: LinkedList, y: LinkedList) -> LinkedList {
     match x {
       LinkedList::Nil => y,
       LinkedList::Cons(z, xs) => LinkedList::Cons(z, Box::new(append(*xs, y)))
@@ -41,7 +41,7 @@ pub mod linked_list {
 
   #[define]
   #[recursive]
-  fn elem(x: T, y: LinkedList) -> bool {
+  pub fn elem(x: T, y: LinkedList) -> bool {
     match y {
       LinkedList::Nil => false,
       LinkedList::Cons(z, xs) => z == x || elem(x, *xs)
