@@ -4,7 +4,7 @@
 #[allow(dead_code)]
 pub mod poly_linked_list {
   #[define]
-  #[derive(PartialEq)]
+  #[derive(PartialEq, Clone)]
   pub enum LinkedList<T> {
     Nil,
     Cons(T, Box<LinkedList<T>>),

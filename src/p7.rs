@@ -69,5 +69,5 @@
 #[allow(unused_imports)]
 mod p7 {
   #[import]
-  use crate::list::linked_list::*;
+  use crate::poly_list::poly_linked_list::*;
 }

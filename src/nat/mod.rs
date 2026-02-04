@@ -17,4 +17,29 @@ pub mod nat {
       Nat::S(m) => !is_even(*m)
     }
   }
+
+  // Sanity checks
+  #[annotate]
+  fn a() -> bool {
+    is_even(Nat::Z)
+  }
+
+  #[annotate]
+  fn b() -> bool {
+    !is_even(Nat::S(Nat::Z))
+  }
+
+  #[annotate]
+  fn c() -> bool {
+    is_even(Nat::S(Nat::S(Nat::Z)))
+  }
+
+  #[annotate]
+  fn d(x: Nat, y: Nat) -> bool {
+    implies(
+      Nat::S(x) == Nat::S(y), x == y
+    ) && implies(
+      x == y, Nat::S(x) == Nat::S(y)
+    )
+  }
 }

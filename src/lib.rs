@@ -1,6 +1,4 @@
-pub mod list;
 pub mod poly_list;
-pub mod pair;
 pub mod nat;
 
 pub mod p4;

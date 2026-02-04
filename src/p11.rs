@@ -38,51 +38,45 @@
 #[allow(dead_code)]
 mod p11 {
   #[import]
-  use crate::list::linked_list::*;
-
-  #[define]
-  pub enum LinkedListOfLists {
-    Nil,
-    Cons(LinkedList, Box<LinkedListOfLists>),
-  }
+  use crate::poly_list::poly_linked_list::*;
 
   #[define]
   #[recursive]
-  fn map(f: fn(T) -> LinkedList, x: LinkedList) -> LinkedListOfLists {
+  fn map<T: PartialEq + Copy>(f: fn(T) -> LinkedList<T>, x: LinkedList<T>) -> LinkedList<LinkedList<T>> {
     match x {
-      LinkedList::Nil => LinkedListOfLists::Nil,
-      LinkedList::Cons(y, xs) => LinkedListOfLists::Cons(f(y), Box::new(map(f, *xs)))
+      LinkedList::<T>::Nil => LinkedList::<LinkedList<T>>::Nil,
+      LinkedList::<T>::Cons(y, xs) => LinkedList::<LinkedList<T>>::Cons(f(y), Box::new(map::<T>(f, *xs)))
     }
   }
 
   #[define]
   #[recursive]
-  fn right_right_equal(x: LinkedList, y: fn(T) -> LinkedList) -> LinkedList {
+  fn right_right_equal<T: PartialEq + Copy>(x: LinkedList<T>, y: fn(T) -> LinkedList<T>) -> LinkedList<T> {
     match x {
-      LinkedList::Nil => LinkedList::Nil,
-      LinkedList::Cons(z, xs) => append(
+      LinkedList::<T>::Nil => LinkedList::<T>::Nil,
+      LinkedList::<T>::Cons(z, xs) => append::<T>(
         y(z),
-        right_right_equal(*xs, y)
+        right_right_equal::<T>(*xs, y)
       )
     }
   }
 
   #[define]
   #[recursive]
-  fn concat(x: LinkedListOfLists) -> LinkedList {
+  fn concat<T: PartialEq + Copy>(x: LinkedList<LinkedList<T>>) -> LinkedList<T> {
     match x {
-      LinkedListOfLists::Nil => LinkedList::Nil,
-      LinkedListOfLists::Cons(y, xs) => append(y, concat(*xs))
+      LinkedList::<LinkedList<T>>::Nil => LinkedList::<T>::Nil,
+      LinkedList::<LinkedList<T>>::Cons(y, xs) => append::<T>(y, concat::<T>(*xs))
     }
   }
 
   #[declare]
   #[phantom]
-  fn f(_: T) -> LinkedList {}
+  fn f<T: PartialEq + Copy>(_: T) -> LinkedList<T> {}
 
-  #[annotate_multi]
-  #[for_values(xs: LinkedList)]
-  fn list_concat_map_bind() -> bool {
-    concat(map(f, xs)) == right_right_equal(xs, f)
+  #[annotate]
+  #[for_type(LinkedList<T> => <T>)]
+  fn list_concat_map_bind<T: PartialEq + Copy>(xs: LinkedList<T>) -> bool {
+    concat::<T>(map::<T>(f::<T>, xs)) == right_right_equal::<T>(xs, f::<T>)
   }
 }

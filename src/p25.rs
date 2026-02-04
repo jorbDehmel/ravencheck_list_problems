@@ -21,8 +21,8 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p25 {
-  #[import]
-  use crate::list::linked_list::*;
+  // #[import]
+  // use crate::poly_list::poly_linked_list::*;
 
   #[annotate_multi]
   #[for_values(xs: LinkedList, ys: LinkedList, zs: LinkedList)]

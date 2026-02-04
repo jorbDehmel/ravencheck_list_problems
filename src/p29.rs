@@ -30,37 +30,47 @@
 #[allow(dead_code)]
 mod p29 {
   #[import]
-  use crate::list::linked_list::*;
+  use crate::poly_list::poly_linked_list::*;
 
   #[import]
   use crate::nat::nat::*;
 
+  // Needed because ravencheck doesn't know about Option<T> and
+  // we can't simply ensure that some UNDEFINED exists in T
+  #[define]
+  #[derive(PartialEq, Clone)]
+  enum MyOpt<T> {
+    Some(T),
+    None
+  }
+
+  #[define]
+  fn is_eq<T: PartialEq>(x: T, y: MyOpt<T>) -> bool {
+    match y {
+      MyOpt::<T>::None => false,
+      MyOpt::<T>::Some(val) => x == val
+    }
+  }
+
   #[define]
   #[recursive]
-  fn at(x: LinkedList, y: Nat) -> T {
+  fn at<T: PartialEq + Clone>(x: LinkedList<T>, y: Nat) -> MyOpt<T> {
     match x {
-      LinkedList::Nil => UNDEFINED,
-      LinkedList::Cons(z, x2) => match y {
-        Nat::Z => z,
-        Nat::S(x3) => at(*x2, *x3)
+      LinkedList::<T>::Nil => MyOpt::<T>::None,
+      LinkedList::<T>::Cons(z, x2) => match y {
+        Nat::Z => MyOpt::<T>::Some(z),
+        Nat::S(x3) => at::<T>(*x2, *x3)
       }
     }
   }
 
-  /*
-  (prove
-    (par (a)
-      (forall ((x a) (xs (list a)))
-        (=> (elem x xs) (exists ((y Nat)) (= x (at xs y)))))))
-  */
-  #[annotate_multi]
-  #[for_values(x: T, xs: LinkedList)]
-  #[for_call(elem(x, xs) => a)]
-  fn f() -> bool {
+  #[annotate]
+  #[for_type(LinkedList<T> => <T>)]
+  fn f<T: PartialEq + Clone>(x: T, xs: LinkedList<T>) -> bool {
     implies(
-      a,
+      elem::<T>(x, xs),
       exists(|y: Nat| {
-        x == at(xs, y)
+        is_eq::<T>(x, at::<T>(xs, y))
       })
     )
   }
