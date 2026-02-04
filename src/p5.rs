@@ -62,9 +62,8 @@ mod p5 {
       ((cons y xs) (cons (pair2 y xs) (select y (select2 xs)))))))
   */
 
-  #[annotate_multi]
-  #[for_values(xs: linked_list)]
-  fn list_select() -> bool {
+  #[annotate]
+  fn list_select(xs: LinkedList) -> bool {
     map(
       |x: PairTLinkedList| {
         match x {

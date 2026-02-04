@@ -19,15 +19,14 @@
 #[allow(unused_imports)]
 mod p9 {
   #[import]
-  use crate::list::linked_list::*;
+  use crate::poly_list::poly_linked_list::*;
 
-  #[annotate_multi]
-  #[for_values(xs: LinkedList, ys: LinkedList, zs: LinkedList)]
-  #[for_call(append(xs, ys) => a)]
-  #[for_call(append(xs, zs) => b)]
-  fn injectivity_of_append_2() -> bool {
+  #[annotate]
+  #[for_type(LinkedList<T> => <T>)]
+  #[inductive(xs: LinkedList<T>, ys: LinkedList<T>, zs: LinkedList<T>)]
+  fn injectivity_of_append_2<T: PartialEq>() -> bool {
     implies(
-      a == b,
+      append::<T>(xs, ys) == append::<T>(xs, zs),
       ys == zs
     )
   }

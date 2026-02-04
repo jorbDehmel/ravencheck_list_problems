@@ -76,9 +76,12 @@ mod p11 {
     }
   }
 
+  #[declare]
+  #[phantom]
+  fn f(_: T) -> LinkedList {}
+
   #[annotate_multi]
   #[for_values(xs: LinkedList)]
-  #[for_values(f: fn(T) -> LinkedList)]
   fn list_concat_map_bind() -> bool {
     concat(map(f, xs)) == right_right_equal(xs, f)
   }

@@ -37,49 +37,46 @@
 #[allow(unused_imports)]
 mod p4 {
   #[import]
-  use crate::list::linked_list::*;
+  use crate::poly_list::poly_linked_list::*;
 
   #[import]
   use crate::nat::nat::*;
 
   #[define]
-  pub enum Pair {
-    Pair2(T, T)
-  }
-
-  #[define]
-  pub enum LinkedListOfPairs {
-    Nil,
-    Cons(Pair, Box<LinkedListOfPairs>)
+  pub enum Pair<F, S> {
+    Pair2(F, S)
   }
 
   #[define]
   #[recursive]
-  fn pairs(x: LinkedList) -> LinkedListOfPairs {
+  fn pairs<T>(x: LinkedList<T>) -> LinkedList<Pair<T, T>> {
     match x {
-      LinkedList::Nil => LinkedListOfPairs::Nil,
-      LinkedList::Cons(y, z) => match *z {
-        LinkedList::Nil => LinkedListOfPairs::Nil,
-        LinkedList::Cons(y2, xs) => LinkedListOfPairs::Cons(
-          Pair::Pair2(y, y2),
-          Box::new(
-            pairs(*xs)
+      LinkedList::<T>::Nil => LinkedList::<Pair<T, T>>::Nil,
+      LinkedList::<T>::Cons(y, z) => match *z {
+        LinkedList::<T>::Nil => LinkedList::<Pair<T, T>>::Nil,
+        LinkedList::<T>::Cons(y2, xs) =>
+          LinkedList::<Pair<T, T>>::Cons(
+            Pair::<T, T>::Pair2(y, y2),
+            Box::new(
+              pairs::<T>(*xs)
+            )
           )
-        )
       }
     }
   }
 
   #[define]
   #[recursive]
-  fn unpair(x: LinkedListOfPairs) -> LinkedList {
+  fn unpair<T>(x: LinkedList<Pair<T, T>>) -> LinkedList<T> {
     match x {
-      LinkedListOfPairs::Nil => LinkedList::Nil,
-      LinkedListOfPairs::Cons(y, xys) => match y {
-        Pair::Pair2(z, y2) => LinkedList::Cons(
+      LinkedList::<Pair<T, T>>::Nil => LinkedList::<T>::Nil,
+      LinkedList::<Pair<T, T>>::Cons(y, xys) => match y {
+        Pair::<T, T>::Pair2(z, y2) => LinkedList::<T>::Cons(
           z,
           Box::new(
-            LinkedList::Cons(y2, Box::new(unpair(*xys)))
+            LinkedList::<T>::Cons(y2,
+              Box::new(unpair::<T>(*xys))
+            )
           )
         )
       }
@@ -88,26 +85,21 @@ mod p4 {
 
   #[define]
   #[recursive]
-  fn length(x: LinkedList) -> Nat {
+  fn length<T>(x: LinkedList<T>) -> Nat {
     match x {
-      LinkedList::Nil => Nat::Z,
-      LinkedList::Cons(_data, l) => Nat::S(Box::new(length(*l)))
+      LinkedList::<T>::Nil => Nat::Z,
+      LinkedList::<T>::Cons(_data, l) => Nat::S(
+        Box::new(length::<T>(*l))
+      )
     }
   }
 
-  #[annotate_multi]
-  #[for_values(xs: LinkedList, xs_pairs_aux: LinkedListOfPairs, xs_len_aux: Nat)]
-  #[for_call(length(xs) => xs_len)]
-  #[for_call(is_even(xs_len_aux) => a)]
-  #[for_call(pairs(xs) => xs_pairs)]
-  #[for_call(unpair(xs_pairs_aux) => b)]
-  fn pair_unpair() -> bool {
+  #[annotate]
+  #[for_type(LinkedList<T> => <T>)]
+  fn pair_unpair<T>(xs: LinkedList<T>) -> bool {
     implies(
-      xs_len == xs_len_aux && xs_pairs == xs_pairs_aux,
-      implies(
-        a,
-        b == xs
-      )
+      is_even(length::<T>(xs)),
+      unpair::<T>(pairs::<T>(xs)) == xs
     )
   }
 }
