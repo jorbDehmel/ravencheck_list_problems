@@ -10,8 +10,8 @@ problems.
 ------------------------------|--------|-------------------|---------------------------
  PairUnpair.smt2              | p4.rs  |                   |
  Select.smt2                  | p5.rs  |                   |
- SelectPermutations'.smt2     | p6.rs  |                   |
- SelectPermutations.smt2      | p7.rs  |                   |
+ SelectPermutations'.smt2     | p6.rs  |                   | Not yet supported
+ SelectPermutations.smt2      | p7.rs  |                   | Not yet supported
  append_inj_1.smt2            | p8.rs  |                   |
  append_inj_2.smt2            | p9.rs  | 0                 | 0.05s
  assoc.smt2                   | p10.rs |                   |

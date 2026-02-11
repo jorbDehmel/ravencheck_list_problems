@@ -35,6 +35,7 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 #[allow(unused_imports)]
+#[add_solver_args("--produce-models")]
 mod p4 {
   #[import]
   use crate::poly_list::poly_linked_list::*;
@@ -137,10 +138,9 @@ mod p4 {
   #[induct(l: LinkedList<T>)]
   #[for_type(LinkedList<T> => <T>)]
   fn sanity_check_2<T: PartialEq + Clone>(t: T, l: LinkedList<T>) -> bool {
-    let l_length = length::<T>(l);
     length::<T>(
       LinkedList::<T>::Cons(t, l)
-    ) == Nat::S(l_length)
+    ) == Nat::S(length::<T>(l))
   }
 
   #[annotate]

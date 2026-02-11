@@ -25,4 +25,34 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p10 {
+  #[import]
+  use crate::poly_list::poly_linked_list::*;
+
+  #[define]
+  #[recursive]
+  fn right_right_equal<A, B: PartialEq>(x: LinkedList<A>, y: fn(A) -> LinkedList<B>) -> LinkedList<B> {
+    match x {
+      LinkedList::<A>::Nil => LinkedList::<B>::Nil,
+      LinkedList::<A>::Cons(z, xs) => append::<B>(
+        y(z),
+        right_right_equal::<A, B>(*xs, y)
+      )
+    }
+  }
+
+  #[annotate]
+  #[for_type(LinkedList<A> => <A>)]
+  fn p10<A, B, C>(m: LinkedList<A>, f: fn(A) -> LinkedList<B>, g: fn(B) -> LinkedList<C>) -> bool {
+    right_right_equal::<B, C>(
+      right_right_equal::<A, B>(m, f),
+      g
+    )
+    ==
+    right_right_equal::<A, C>(
+      m,
+      |x: A| {
+        right_right_equal::<B, C>(f(x), g)
+      }
+    )
+  }
 }

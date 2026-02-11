@@ -70,4 +70,117 @@
 mod p7 {
   #[import]
   use crate::poly_list::poly_linked_list::*;
+
+  #[define]
+  enum Pair<F, S> {
+    Pair2(F, S)
+  }
+
+  #[define]
+  #[recursive]
+  fn select<T: PartialEq + Clone>(x: T, y: LinkedList<Pair<T, LinkedList<T>>>) -> LinkedList<Pair<T, LinkedList<T>>> {
+    match y {
+      LinkedList::<Pair<T, LinkedList<T>>>::Nil =>
+        LinkedList::<Pair<T, LinkedList<T>>>::Nil,
+      LinkedList::<Pair<T, LinkedList<T>>>::Cons(z, x2) =>
+        match z {
+          Pair::<T, LinkedList<T>>::Pair2(y2, ys) =>
+            LinkedList::<Pair<T, LinkedList<T>>>::Cons(
+              Pair::<T, LinkedList<T>>::Pair2(
+                y2,
+                LinkedList::<T>::Cons(x.clone(), Box::new(ys))
+              ),
+              Box::new(select::<T>(x, *x2))
+            )
+        }
+    }
+  }
+
+  #[define]
+  #[recursive]
+  fn select2<T: PartialEq + Clone>(x: LinkedList<T>) -> LinkedList<Pair<T, LinkedList<T>>> {
+    match x {
+      LinkedList::<T>::Nil =>
+        LinkedList::<Pair<T, LinkedList<T>>>::Nil,
+      LinkedList::<T>::Cons(y, xs) =>
+        LinkedList::<Pair<T, LinkedList<T>>>::Cons(
+          Pair::<T, LinkedList<T>>::Pair2(y.clone(), *xs.clone()),
+          Box::new(select::<T>(y, select2::<T>(*xs)))
+        )
+    }
+  }
+
+  #[define]
+  #[recursive]
+  fn formula<A>(x: LinkedList<Pair<A, LinkedList<A>>>) -> LinkedList<LinkedList<A>> {
+    match x {
+      LinkedList::<Pair<A, LinkedList<A>>>::Nil =>
+        LinkedList::<LinkedList<A>>::Nil,
+      LinkedList::<Pair<A, LinkedList<A>>>::Cons(y, z) =>
+        match y {
+          Pair::<A, LinkedList<A>>::Pair2(y2, ys) =>
+            LinkedList::<LinkedList<A>>::Cons(
+              LinkedList::<A>::Cons(y2, Box::new(ys)),
+              Box::new(formula::<A>(*z))
+            )
+        }
+    }
+  }
+
+  #[define]
+  #[recursive]
+  fn all<A>(p: fn(A) -> bool, x: LinkedList<A>) -> bool {
+    match x {
+      LinkedList::<A>::Nil => true,
+      LinkedList::<A>::Cons(y, xs) => p(y) && all::<A>(p, *xs)
+    }
+  }
+
+  #[define]
+  #[recursive]
+  fn delete_by<A: PartialEq + Clone>(x: fn(A, A) -> bool, y: A, z: LinkedList<A>) -> LinkedList<A> {
+    match z {
+      LinkedList::<A>::Nil => LinkedList::<A>::Nil,
+      LinkedList::<A>::Cons(y2, ys) =>
+        if x(y.clone(), y2.clone()) {
+          *ys
+        } else {
+          LinkedList::<A>::Cons(y2, Box::new(delete_by::<A>(x, y, *ys)))
+        }
+    }
+  }
+
+  #[define]
+  #[recursive]
+  fn is_permutation<A: PartialEq + Clone>(x: LinkedList<A>, y: LinkedList<A>) -> bool {
+    match x {
+      LinkedList::<A>::Nil => match y {
+        LinkedList::<A>::Nil => true,
+        LinkedList::<A>::Cons(_z, _x2) => false
+      },
+      LinkedList::<A>::Cons(x3, xs) =>
+        elem::<A>(x3.clone(), y.clone()) && is_permutation::<A>(
+          *xs,
+          delete_by::<A>(
+            |x4: A, x5: A| {
+              x4 == x5
+            },
+            x3,
+            y
+          )
+        )
+    }
+  }
+
+  #[annotate]
+  #[for_type(LinkedList<A> => <A>)]
+  #[induct(xs: LinkedList<A>)]
+  fn p7<A: PartialEq + Clone>(xs: LinkedList<A>) -> bool {
+    all(
+      |x: LinkedList<A>| {
+        is_permutation(x, xs)
+      },
+      formula(select2(xs))
+    )
+  }
 }

@@ -19,8 +19,6 @@ pub mod p21;
 pub mod p22;
 pub mod p23;
 pub mod p24;
-pub mod p25;
-pub mod p26;
 pub mod p27;
 pub mod p28;
 pub mod p29;
@@ -49,3 +47,5 @@ pub mod p46;
 // pub mod p18;
 // pub mod p19;
 // pub mod p20;
+
+// 25 and 26 are duplicates of 8 and 9, respectively
