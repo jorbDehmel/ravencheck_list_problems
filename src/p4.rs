@@ -50,16 +50,17 @@ mod p4 {
 
   #[define]
   #[recursive]
+  #[total]
   fn pairs<T: PartialEq + Clone>(x: LinkedList<T>) -> LinkedList<Pair<T, T>> {
     match x {
       LinkedList::<T>::Nil => LinkedList::<Pair<T, T>>::Nil,
-      LinkedList::<T>::Cons(y, z) => match *z {
+      LinkedList::<T>::Cons(cur_val, next) => match *next {
         LinkedList::<T>::Nil => LinkedList::<Pair<T, T>>::Nil,
-        LinkedList::<T>::Cons(y2, xs) =>
+        LinkedList::<T>::Cons(next_val, next_next) =>
           LinkedList::<Pair<T, T>>::Cons(
-            Pair::<T, T>::Pair2(y, y2),
+            Pair::<T, T>::Pair2(cur_val, next_val),
             Box::new(
-              pairs::<T>(*xs)
+              pairs::<T>(*next_next)
             )
           )
       }
@@ -68,15 +69,16 @@ mod p4 {
 
   #[define]
   #[recursive]
+  #[total]
   fn unpair<T: PartialEq + Clone>(x: LinkedList<Pair<T, T>>) -> LinkedList<T> {
     match x {
       LinkedList::<Pair<T, T>>::Nil => LinkedList::<T>::Nil,
-      LinkedList::<Pair<T, T>>::Cons(y, xys) => match y {
-        Pair::<T, T>::Pair2(z, y2) => LinkedList::<T>::Cons(
-          z,
+      LinkedList::<Pair<T, T>>::Cons(data, next) => match data {
+        Pair::<T, T>::Pair2(first, second) => LinkedList::<T>::Cons(
+          first,
           Box::new(
-            LinkedList::<T>::Cons(y2,
-              Box::new(unpair::<T>(*xys))
+            LinkedList::<T>::Cons(second,
+              Box::new(unpair::<T>(*next))
             )
           )
         )
@@ -97,97 +99,186 @@ mod p4 {
     }
   }
 
-  #[assume]
+  #[annotate]
   #[for_type(LinkedList<T> => <T>)]
-  fn differing_lengths_never_equal<T: PartialEq + Clone>(a: LinkedList<T>, b: LinkedList<T>) -> bool {
-    implies(
-      length::<T>(a) != length::<T>(b),
-      a != b
+  fn pairs_nil_to_nil<T>() -> bool {
+    pairs::<T>(LinkedList::<T>::Nil)
+    == LinkedList::<Pair<T, T>>::Nil
+  }
+
+  #[annotate]
+  #[for_type(LinkedList<T> => <T>)]
+  fn pairs_single_to_nil<T>(t1: T) -> bool {
+    pairs::<T>(
+      LinkedList::<T>::Cons(
+        t1,
+        LinkedList::<T>::Nil
+      )
+    ) == LinkedList::<Pair<T, T>>::Nil
+  }
+
+  #[annotate]
+  #[for_type(LinkedList<T> => <T>)]
+  fn pairs_add_pair<T>(t1: T, t2: T) -> bool {
+    pairs::<T>(
+      LinkedList::<T>::Cons(
+        t1,
+        LinkedList::<T>::Cons(
+          t2,
+          LinkedList::<T>::Nil
+        )
+      )
+    ) == LinkedList::<Pair<T, T>>::Cons(
+      Pair::<T, T>::Pair2(t1, t2),
+      LinkedList::<Pair<T, T>>::Nil
     )
   }
 
-  #[define]
-  #[recursive]
-  fn are_eq<T: PartialEq + Clone>(x: LinkedList<T>, y: LinkedList<T>) -> bool {
-    match x {
-      LinkedList::<T>::Nil => match y {
-        LinkedList::<T>::Nil => true,
-        LinkedList::<T>::Cons(_y_data, _y_next) => false
-      },
-      LinkedList::<T>::Cons(x_data, x_next) => match y {
-        LinkedList::<T>::Cons(y_data, y_next) =>
-          (x_data == y_data) && are_eq::<T>(*x_next, *y_next),
-        LinkedList::<T>::Nil => false
-      }
-    }
-  }
-
-  #[assume]
+  #[annotate]
   #[for_type(LinkedList<T> => <T>)]
-  fn are_eq_def<T: PartialEq + Clone>(a: LinkedList<T>, b: LinkedList<T>) -> bool {
-    implies(a == b, are_eq::<T>(a, b)) && implies(are_eq::<T>(a, b), a == b)
+  fn unpair_nil_to_nil<T>() -> bool {
+    unpair::<T>(LinkedList::<Pair<T, T>>::Nil)
+    == LinkedList::<T>::Nil
   }
 
   #[annotate]
   #[for_type(LinkedList<T> => <T>)]
-  fn sanity_check_1<T: PartialEq + Clone>() -> bool {
-    length::<T>(LinkedList::<T>::Nil) == Nat::Z
-  }
-
-  #[annotate]
-  #[induct(l: LinkedList<T>)]
-  #[for_type(LinkedList<T> => <T>)]
-  fn sanity_check_2<T: PartialEq + Clone>(t: T, l: LinkedList<T>) -> bool {
-    length::<T>(
-      LinkedList::<T>::Cons(t, l)
-    ) == Nat::S(length::<T>(l))
-  }
-
-  #[annotate]
-  #[induct(l: LinkedList<T>)]
-  #[for_type(LinkedList<T> => <T>)]
-  fn sanity_check_3<T: PartialEq + Clone>(t1: T, t2: T, l: LinkedList<T>) -> bool {
-    length::<T>(LinkedList::<T>::Cons(t1, l)) == length::<T>(LinkedList::<T>::Cons(t2, l))
-  }
-
-  #[annotate]
-  #[induct(l: LinkedList<T>)]
-  #[for_type(LinkedList<T> => <T>)]
-  fn sanity_check_4<T: PartialEq + Clone>(l: LinkedList<T>) -> bool {
-    length::<T>(l) == length::<T>(l.clone())
-  }
-
-  #[annotate]
-  #[induct(l: LinkedList<T>)]
-  #[for_type(LinkedList<T> => <T>)]
-  fn sanity_check_5<T: PartialEq + Clone>(t: T, l: LinkedList<T>) -> bool {
-    length::<T>(LinkedList::<T>::Cons(t, l)) != length::<T>(l)
-  }
-
-  #[annotate]
-  #[induct(l: LinkedList<T>)]
-  #[for_type(LinkedList<T> => <T>)]
-  fn sanity_check_6<T: PartialEq + Clone>(t: T, l: LinkedList<T>) -> bool {
-    LinkedList::<T>::Cons(t, l) != l
-  }
-
-  #[annotate]
-  #[induct(l: LinkedList<T>)]
-  #[for_type(LinkedList<T> => <T>)]
-  fn sanity_check_7<T: PartialEq + Clone>(t: T, l: LinkedList<T>) -> bool {
-    length::<T>(LinkedList::<T>::Cons(t, l)) != length::<T>(l)
+  fn unpair_pair<T>(t1: T, t2: T) -> bool {
+    unpair::<T>(LinkedList::<Pair<T, T>>::Cons(
+      Pair::<T, T>::Pair2(t1, t2),
+      LinkedList::<Pair<T, T>>::Nil
+    )) == LinkedList::<T>::Cons(
+      t1,
+      LinkedList::<T>::Cons(
+        t2,
+        LinkedList::<T>::Nil
+      )
+    )
   }
 
   #[annotate]
   #[for_type(LinkedList<T> => <T>)]
-  fn sanity_check_8<T: PartialEq + Clone>(t: T) -> bool {
-    LinkedList::<T>::Cons(t, LinkedList::<T>::Nil) != LinkedList::<T>::Nil
+  #[inductive(l: LinkedList<T>)]
+  fn sanity_check_1<T>(t1: T, t2: T) -> bool {
+    pairs::<T>(
+      LinkedList::<T>::Cons(t1, LinkedList::<T>::Cons(t2, l))
+    ) == LinkedList::<Pair<T, T>>::Cons(
+      Pair::<T, T>::Pair2(t1, t2),
+      pairs::<T>(l)
+    )
   }
 
   #[annotate]
-  #[induct(xs: LinkedList<T>)]
   #[for_type(LinkedList<T> => <T>)]
-  fn pair_unpair<T: PartialEq + Clone>(xs: LinkedList<T>) -> bool {
+  #[inductive(l: LinkedList<Pair<T, T>>)]
+  fn sanity_check_2<T>(t1: T, t2: T) -> bool {
+    unpair::<T>(LinkedList::<Pair<T, T>>::Cons(
+      Pair::<T, T>::Pair2(t1, t2),
+      l
+    ))
+    ==
+    LinkedList::<T>::Cons(t1, LinkedList::<T>::Cons(t2, unpair::<T>(l)))
+  }
+
+  #[annotate]
+  #[for_type(LinkedList<T> => <T>)]
+  fn sanity_check_5<T>() -> bool {
+    is_even(length::<T>(LinkedList::<T>::Nil))
+  }
+
+  #[annotate]
+  #[for_type(LinkedList<T> => <T>)]
+  fn sanity_check_6<T>(t: T) -> bool {
+    !is_even(length::<T>(LinkedList::<T>::Cons(t, LinkedList::<T>::Nil)))
+  }
+
+  #[annotate]
+  #[for_type(LinkedList<T> => <T>)]
+  #[inductive(l: LinkedList<T>)]
+  fn sanity_check_7<T>(t: T) -> bool {
+    is_even(length::<T>(l)) ==
+    !is_even(length::<T>(LinkedList::<T>::Cons(t, l)))
+  }
+
+  #[annotate]
+  #[for_type(LinkedList<T> => <T>)]
+  #[inductive(l: LinkedList<T>)]
+  fn sanity_check_8<T>(t: T) -> bool {
+      !is_even(length::<T>(l)) ==
+      is_even(length::<T>(LinkedList::<T>::Cons(t, l))
+    )
+  }
+
+  #[annotate]
+  #[for_type(LinkedList<T> => <T>)]
+  #[inductive(l: LinkedList<T>)]
+  fn sanity_check_9<T>(t1: T, t2: T) -> bool {
+    is_even(length::<T>(l)) ==
+    is_even(
+      length::<T>(
+        LinkedList::<T>::Cons(
+          t1,
+          LinkedList::<T>::Cons(
+            t2,
+            l
+          )
+        )
+      )
+    )
+  }
+
+  #[annotate]
+  #[for_type(LinkedList<T> => <T>)]
+  #[inductive(l: LinkedList<T>)]
+  fn decompose_even_len_list<T>(t1: T, t2: T) -> bool {
+    is_even(
+      length::<T>(
+        LinkedList::<T>::Cons(
+          t1,
+          Box::new(
+            LinkedList::<T>::Cons(
+              t2,
+              Box::new(l)
+            )
+          )
+        )
+      )
+    )
+    ==
+    is_even(length::<T>(l))
+  }
+
+  #[annotate]
+  #[for_type(LinkedList<T> => <T>)]
+  #[inductive(l: LinkedList<T>)]
+  fn pair_unpair_append_2<T>(t1: T, t2: T, l: LinkedList<T>) -> bool {
+    (unpair::<T>(pairs::<T>(l)) == l)
+    ==
+    (
+      unpair::<T>(
+        pairs::<T>(
+          LinkedList::<T>::Cons(
+            t1,
+            LinkedList::<T>::Cons(
+              t2,
+              l
+            )
+          )
+        )
+      ) == LinkedList::<T>::Cons(
+        t1,
+        LinkedList::<T>::Cons(
+          t2,
+          l
+        )
+      )
+    )
+  }
+
+  #[annotate]
+  #[inductive(xs: LinkedList<T>)]
+  #[for_type(LinkedList<T> => <T>)]
+  fn pair_unpair<T: PartialEq + Clone>() -> bool {
     implies(
       is_even(length::<T>(xs)),
       unpair::<T>(pairs::<T>(xs)) == xs

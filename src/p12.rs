@@ -56,25 +56,25 @@ mod p12 {
     }
   }
 
-  #[define]
-  #[recursive]
-  fn nub_by<A>(x: fn(A) -> fn(A) -> bool, y: LinkedList<A>) -> LinkedList<A> {
-    match y {
-      LinkedList::Nil => LinkedList::Nil,
-      LinkedList::Cons(z, xs) => LinkedList::Cons(
-        z,
-        Box::new(nub_by(
-          x,
-          filter(
-            |y2: A| {
-              !x(z)(y2)
-            },
-            *xs
-          )
-        ))
-      )
-    }
-  }
+  // #[define]
+  // #[recursive]
+  // fn nub_by<A>(x: fn(A) -> fn(A) -> bool, y: LinkedList<A>) -> LinkedList<A> {
+  //   match y {
+  //     LinkedList::Nil => LinkedList::Nil,
+  //     LinkedList::Cons(z, xs) => LinkedList::Cons(
+  //       z,
+  //       Box::new(nub_by(
+  //         x,
+  //         filter(
+  //           |y2: A| {
+  //             !x(z)(y2)
+  //           },
+  //           *xs
+  //         )
+  //       ))
+  //     )
+  //   }
+  // }
 
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]

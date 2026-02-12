@@ -93,7 +93,7 @@ mod p13 {
 
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
-  #[induct(xs: LinkedList<A>)]
+  #[inductive(xs: LinkedList<A>)]
   fn p13<A: PartialEq + Clone>(x: A, xs: LinkedList<A>) -> bool {
     implies(
       deleteAll(x, xs)
@@ -108,7 +108,7 @@ mod p13 {
         xs
       ),
       le(
-        count(x, xs),
+        count::<A>(x, xs),
         Int::S(Int::P)
       )
     )

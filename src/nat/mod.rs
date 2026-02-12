@@ -11,6 +11,7 @@ pub mod nat {
 
   #[define]
   #[recursive]
+  #[total]
   fn is_even(n: Nat) -> bool {
     match n {
       Nat::Z => true,
@@ -18,28 +19,31 @@ pub mod nat {
     }
   }
 
-  // Sanity checks
-  // #[annotate]
-  // fn a() -> bool {
-  //   is_even(Nat::Z)
-  // }
+  #[annotate]
+  fn zero_is_even() -> bool {
+    is_even(Nat::Z)
+  }
 
-  // #[annotate]
-  // fn b() -> bool {
-  //   !is_even(Nat::S(Nat::Z))
-  // }
+  #[annotate]
+  fn one_is_odd() -> bool {
+    !is_even(Nat::S(Nat::Z))
+  }
 
-  // #[annotate]
-  // fn c() -> bool {
-  //   is_even(Nat::S(Nat::S(Nat::Z)))
-  // }
+  #[annotate]
+  #[inductive(n: Nat)]
+  fn odd_follows_even() -> bool {
+    is_even(n) == !is_even(Nat::S(n))
+  }
 
-  // #[annotate]
-  // fn d(x: Nat, y: Nat) -> bool {
-  //   implies(
-  //     Nat::S(x) == Nat::S(y), x == y
-  //   ) && implies(
-  //     x == y, Nat::S(x) == Nat::S(y)
-  //   )
-  // }
+  #[annotate]
+  #[inductive(n: Nat)]
+  fn even_follows_odd() -> bool {
+    !is_even(n) == is_even(Nat::S(n))
+  }
+
+  #[annotate]
+  #[inductive(n: Nat)]
+  fn even_odd_toggle_2_step() -> bool {
+    is_even(n) == is_even(Nat::S(Nat::S(n)))
+  }
 }

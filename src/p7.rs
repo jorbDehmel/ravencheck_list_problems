@@ -174,7 +174,7 @@ mod p7 {
 
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
-  #[induct(xs: LinkedList<A>)]
+  #[inductive(xs: LinkedList<A>)]
   fn p7<A: PartialEq + Clone>(xs: LinkedList<A>) -> bool {
     all(
       |x: LinkedList<A>| {

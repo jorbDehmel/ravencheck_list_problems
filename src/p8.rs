@@ -23,7 +23,7 @@ mod p8 {
 
   #[annotate]
   #[for_type(LinkedList<T> => <T>)]
-  #[induct(xs: LinkedList<T>, ys: LinkedList<T>, zs: LinkedList<T>)]
+  #[inductive(xs: LinkedList<T>, ys: LinkedList<T>, zs: LinkedList<T>)]
   fn injectivity_of_append<T>(xs: LinkedList<T>, ys: LinkedList<T>, zs: LinkedList<T>) -> bool {
     implies(
       append::<T>(xs, zs) == append::<T>(ys, zs),
