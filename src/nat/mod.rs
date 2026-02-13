@@ -12,7 +12,7 @@ pub mod nat {
   #[define]
   #[recursive]
   #[total]
-  fn is_even(n: Nat) -> bool {
+  pub fn is_even(n: Nat) -> bool {
     match n {
       Nat::Z => true,
       Nat::S(m) => !is_even(*m)

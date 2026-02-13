@@ -6,14 +6,14 @@ problems.
 
 ## Overview
 
- Problem file                 | File   | Additional axioms | Verification time / Notes
+ Problem file                 | File   | Additional lemmas | Verification time / Notes
 ------------------------------|--------|-------------------|---------------------------
- PairUnpair.smt2              | p4.rs  |                   |
+ PairUnpair.smt2              | p4.rs  | 12                | 2.29s
  Select.smt2                  | p5.rs  |                   |
  SelectPermutations'.smt2     | p6.rs  |                   | Not yet supported
  SelectPermutations.smt2      | p7.rs  |                   | Not yet supported
  append_inj_1.smt2            | p8.rs  |                   |
- append_inj_2.smt2            | p9.rs  | 0                 | 0.05s
+ append_inj_2.smt2            | p9.rs  | 0                 | 0.09s
  assoc.smt2                   | p10.rs |                   |
  concat_map_bind.smt2         | p11.rs |                   |
  count_nub.smt2               | p12.rs |                   |
