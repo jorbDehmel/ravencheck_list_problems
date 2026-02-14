@@ -30,6 +30,8 @@ week. To ensure this is true, I am logging my hours here.
  2/10/26 | 11:00 AM | 2:00 PM  | 29.5 hours | Worked on unimplemented problems
  2/12/26 | 11:00 AM | 2:00 PM  | 32.5 hours | Worked on p4
  2/12/26 | 6:00 PM  | 7:00 PM  | 33.5 hours | Got p4 working!!!
+ 2/13/26 | 11:00 AM | 12:30 PM | 35 hours   | Meetings, worked on p8
+ 2/14/26 | 11:30 AM | 12:00 PM | 35.5 hours | Worked on p8
 
 # TODO
 
