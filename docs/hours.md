@@ -33,7 +33,7 @@ week. To ensure this is true, I am logging my hours here.
  2/13/26 | 11:00 AM | 12:30 PM | 35 hours   | Meetings, worked on p8
  2/14/26 | 11:30 AM | 12:00 PM | 35.5 hours | Worked on p8
  2/17/26 | 11:00 AM | 2:00 PM  | 38.5 hours | Worked on p8
- 2/21/26 | | | | Worked on p8
+ 2/21/26 | 04:00 PM | 5:30 PM  | 40 hours   | Worked on p8 (lemma 2)
 
 # TODO
 
