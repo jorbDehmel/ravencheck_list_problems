@@ -25,12 +25,27 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p10 {
-  #[import]
-  use crate::poly_list::poly_linked_list::*;
+  #[define]
+  pub enum LinkedList<T> {
+    Nil,
+    Cons(T, Box<LinkedList<T>>),
+  }
 
   #[define]
   #[recursive]
-  fn right_right_equal<A, B: PartialEq>(x: LinkedList<A>, y: fn(A) -> LinkedList<B>) -> LinkedList<B> {
+  pub fn append<T: PartialEq>(
+      x: LinkedList<T>, y: LinkedList<T>) -> LinkedList<T> {
+    match x {
+      LinkedList::<T>::Nil => y,
+      LinkedList::<T>::Cons(z, xs) =>
+        LinkedList::<T>::Cons(z, Box::new(append::<T>(*xs, y)))
+    }
+  }
+
+  #[define]
+  #[recursive]
+  fn right_right_equal<A, B: PartialEq>(x: LinkedList<A>,
+      y: fn(A) -> LinkedList<B>) -> LinkedList<B> {
     match x {
       LinkedList::<A>::Nil => LinkedList::<B>::Nil,
       LinkedList::<A>::Cons(z, xs) => append::<B>(
@@ -40,18 +55,26 @@ mod p10 {
     }
   }
 
+  #[declare]
+  #[phantom]
+  fn f<A, B>(_: A) -> LinkedList<B> {}
+
+  #[declare]
+  #[phantom]
+  fn g<B, C>(_: B) -> LinkedList<C> {}
+
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
-  fn p10<A, B, C>(m: LinkedList<A>, f: fn(A) -> LinkedList<B>, g: fn(B) -> LinkedList<C>) -> bool {
+  #[for_type(LinkedList<B> => <B>)]
+  #[for_type(LinkedList<C> => <C>)]
+  fn list_assoc<A, B, C>(m: LinkedList<A>) -> bool {
     right_right_equal::<B, C>(
-      right_right_equal::<A, B>(m, f),
-      g
-    )
-    ==
-    right_right_equal::<A, C>(
+      right_right_equal::<A, B>(m, f::<A, B>),
+      g::<B, C>
+    ) == right_right_equal::<A, C>(
       m,
       |x: A| {
-        right_right_equal::<B, C>(f(x), g)
+        right_right_equal::<B, C>(f::<A, B>(x), g::<B, C>)
       }
     )
   }

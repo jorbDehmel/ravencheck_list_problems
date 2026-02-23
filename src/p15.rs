@@ -25,4 +25,49 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p15 {
+  #[import]
+  use crate::poly_list::poly_linked_list::*;
+
+  #[define]
+  #[recursive]
+  fn map<T>(f: fn(T) -> T, x: LinkedList<T>) -> LinkedList<T> {
+    match x {
+      LinkedList::<T>::Nil => LinkedList::<T>::Nil,
+      LinkedList::<T>::Cons(y, xs) =>
+        LinkedList::<T>::Cons(
+          f(y),
+          Box::new(map::<T>(f, *xs))
+        )
+    }
+  }
+
+  #[define]
+  #[recursive]
+  pub fn elem<T: PartialEq>(x: T, y: LinkedList<T>) -> bool {
+    match y {
+      LinkedList::<T>::Nil => false,
+      LinkedList::<T>::Cons(z, xs) => z == x || elem::<T>(x, *xs)
+    }
+  }
+
+  // Universally quantified function in the VC later
+  #[declare]
+  #[phantom]
+  fn f<T>(_: T) -> T {}
+
+  #[annotate]
+  #[for_type(LinkedList<T> => <T>)]
+  #[inductive(xs: LinkedList<T>)]
+  fn list_elem_map<T>(y: T) -> bool {
+    implies(
+      elem::<T>(y, map::<T>(f::<T>, xs)),
+      exists (
+        |x: T| {
+          f::<T>(x) == y
+          &&
+          elem::<T>(y, xs)
+        }
+      )
+    )
+  }
 }

@@ -41,7 +41,7 @@ week. To ensure this is true, I am logging my hours here.
 
 Write at all:
 - p12-13
-- p15-29
+- p16-29
 - p30-46
 
 Get working:
