@@ -10,9 +10,7 @@ problems.
 ------------------------------|--------|-------------------|---------------------------
  PairUnpair.smt2              | p4.rs  | 12                | 2.29s
  Select.smt2                  | p5.rs  |                   |
- SelectPermutations'.smt2     | p6.rs  |                   | Not yet supported
- SelectPermutations.smt2      | p7.rs  |                   | Not yet supported
- append_inj_1.smt2            | p8.rs  |                   |
+ append_inj_1.smt2            | p8.rs  | 5                 | 0.37s
  append_inj_2.smt2            | p9.rs  | 0                 | 0.09s
  assoc.smt2                   | p10.rs |                   |
  concat_map_bind.smt2         | p11.rs |                   |
@@ -51,13 +49,15 @@ problems.
 
 For now, ravencheck doesn't support codependent functions.
 Therefore, I am ignoring problems including them. The following
-are those problems.
+files have unsupported features.
 
- Problem file        | File
----------------------|--------
- Interleave.smt2     | p1.rs
- PairEvens.smt2      | p2.rs
- PairOdds.smt2       | p3.rs
- nat_Interleave.smt2 | p18.rs
- nat_PairEvens.smt2  | p19.rs
- nat_PairOdds.smt2   | p20.rs
+ Problem file             | File
+--------------------------|--------
+ Interleave.smt2          | p1.rs
+ PairEvens.smt2           | p2.rs
+ PairOdds.smt2            | p3.rs
+ nat_Interleave.smt2      | p18.rs
+ nat_PairEvens.smt2       | p19.rs
+ nat_PairOdds.smt2        | p20.rs
+ SelectPermutations'.smt2 | p6.rs
+ SelectPermutations.smt2  | p7.rs

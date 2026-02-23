@@ -38,20 +38,58 @@ mod p8 {
   //////////////////////////////////////////////////////////////
   /// Verification
 
-  // This implies lemma 1
+  // Returns true iff l1 is a suffix of l2
+  #[define]
+  #[recursive]
+  #[total]
+  fn is_suffix_of<T: PartialEq>(l1: LinkedList<T>, l2: LinkedList<T>) -> bool {
+    if l1 == l2 {
+      true
+    } else {
+      match l2 {
+        LinkedList::<T>::Nil => false,
+        LinkedList::<T>::Cons(_l2_data, l2_next) =>
+          is_suffix_of::<T>(l1, *l2_next)
+      }
+    }
+  }
+
+  #[annotate]
+  #[for_type(LinkedList<T> => <T>)]
+  #[inductive(l: LinkedList<T>)]
+  fn lemma_1<T>() -> bool {
+    is_suffix_of::<T>(l, l)
+  }
+
   #[annotate]
   #[for_type(LinkedList<T> => <T>)]
   #[inductive(l1: LinkedList<T>, l2: LinkedList<T>)]
-  fn lemma_2<T>(t: T, t1: T) -> bool {
-    l1 != LinkedList::<T>::Cons(t, append::<T>(l2, LinkedList::<T>::Cons(t1, l1)))
+  fn lemma_2<T>() -> bool {
+    is_suffix_of::<T>(l1, append::<T>(l2, l1))
   }
 
-  // This implies injectivity of append
   #[annotate]
   #[for_type(LinkedList<T> => <T>)]
-  #[inductive(zs: LinkedList<T>, l: LinkedList<T>)]
-  fn lemma_1<T>(t: T) -> bool {
-    zs != LinkedList::<T>::Cons(t, append::<T>(l, zs))
+  #[inductive(l1: LinkedList<T>)]
+  fn lemma_3<T>(t: T) -> bool {
+    is_suffix_of::<T>(l1, LinkedList::<T>::Cons(t, l1))
+  }
+
+  #[annotate]
+  #[for_type(LinkedList<T> => <T>)]
+  #[inductive(l1: LinkedList<T>, l2: LinkedList<T>)]
+  fn lemma_4<T>(t: T) -> bool {
+    implies(
+      !is_suffix_of::<T>(l1, l2),
+      !is_suffix_of::<T>(LinkedList::<T>::Cons(t, l1), l2)
+    )
+  }
+
+  #[annotate]
+  #[for_type(LinkedList<T> => <T>)]
+  #[inductive(l1: LinkedList<T>)]
+  fn lemma_5<T>(t: T) -> bool {
+    !is_suffix_of::<T>(LinkedList::<T>::Cons(t, l1), l1)
   }
 
   #[annotate]
