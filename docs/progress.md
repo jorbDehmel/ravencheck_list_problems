@@ -9,11 +9,11 @@ problems.
  Problem file                 | File   | Additional lemmas | Verification time / Notes
 ------------------------------|--------|-------------------|---------------------------
  PairUnpair.smt2              | p4.rs  | 12                | 2.29s
- Select.smt2                  | p5.rs  |                   |
+ Select.smt2                  | p5.rs  | 0                 | 0.11s
  append_inj_1.smt2            | p8.rs  | 5                 | 0.37s
  append_inj_2.smt2            | p9.rs  | 0                 | 0.09s
  assoc.smt2                   | p10.rs |                   |
- concat_map_bind.smt2         | p11.rs |                   |
+ concat_map_bind.smt2         | p11.rs | 0                 | 0.13s
  count_nub.smt2               | p12.rs |                   |
  deleteAll_count.smt2         | p13.rs |                   |
  elem.smt2                    | p14.rs |                   |

@@ -94,7 +94,7 @@ mod p13 {
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
   #[inductive(xs: LinkedList<A>)]
-  fn p13<A: PartialEq + Clone>(x: A, xs: LinkedList<A>) -> bool {
+  fn p13<A: PartialEq + Clone>(x: A) -> bool {
     implies(
       deleteAll(x, xs)
       ==

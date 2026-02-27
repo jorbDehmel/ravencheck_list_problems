@@ -37,8 +37,21 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p11 {
-  #[import]
-  use crate::poly_list::poly_linked_list::*;
+  #[define]
+  #[derive(PartialEq, Clone)]
+  pub enum LinkedList<T> {
+    Nil,
+    Cons(T, Box<LinkedList<T>>),
+  }
+
+  #[define]
+  #[recursive]
+  pub fn append<T: PartialEq>(x: LinkedList<T>, y: LinkedList<T>) -> LinkedList<T> {
+    match x {
+      LinkedList::<T>::Nil => y,
+      LinkedList::<T>::Cons(z, xs) => LinkedList::<T>::Cons(z, Box::new(append::<T>(*xs, y)))
+    }
+  }
 
   #[define]
   #[recursive]
@@ -51,12 +64,12 @@ mod p11 {
 
   #[define]
   #[recursive]
-  fn right_right_equal<T: PartialEq + Copy>(x: LinkedList<T>, y: fn(T) -> LinkedList<T>) -> LinkedList<T> {
+  fn map_concat<T: PartialEq + Copy>(x: LinkedList<T>, y: fn(T) -> LinkedList<T>) -> LinkedList<T> {
     match x {
       LinkedList::<T>::Nil => LinkedList::<T>::Nil,
       LinkedList::<T>::Cons(z, xs) => append::<T>(
         y(z),
-        right_right_equal::<T>(*xs, y)
+        map_concat::<T>(*xs, y)
       )
     }
   }
@@ -76,7 +89,8 @@ mod p11 {
 
   #[annotate]
   #[for_type(LinkedList<T> => <T>)]
-  fn list_concat_map_bind<T: PartialEq + Copy>(xs: LinkedList<T>) -> bool {
-    concat::<T>(map::<T>(f::<T>, xs)) == right_right_equal::<T>(xs, f::<T>)
+  #[inductive(xs: LinkedList<T>)]
+  fn list_concat_map_bind<T: PartialEq + Copy>() -> bool {
+    concat::<T>(map::<T>(f::<T>, xs)) == map_concat::<T>(xs, f::<T>)
   }
 }

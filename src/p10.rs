@@ -25,6 +25,7 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p10 {
+  #[derive(PartialEq)]
   #[define]
   pub enum LinkedList<T> {
     Nil,
@@ -42,15 +43,21 @@ mod p10 {
     }
   }
 
+  /*
+  Given a list and a function mapping list entries to new lists,
+  return the concatenation of the lists created by applying the
+  function to each entry in succession. This is ">>=" in the
+  TIP specs.
+  */
   #[define]
   #[recursive]
-  fn right_right_equal<A, B: PartialEq>(x: LinkedList<A>,
+  fn map_concat<A, B: PartialEq>(x: LinkedList<A>,
       y: fn(A) -> LinkedList<B>) -> LinkedList<B> {
     match x {
       LinkedList::<A>::Nil => LinkedList::<B>::Nil,
       LinkedList::<A>::Cons(z, xs) => append::<B>(
         y(z),
-        right_right_equal::<A, B>(*xs, y)
+        map_concat::<A, B>(*xs, y)
       )
     }
   }
@@ -63,18 +70,23 @@ mod p10 {
   #[phantom]
   fn g<B, C>(_: B) -> LinkedList<C> {}
 
+  /*
+  This has some type weirdness in the VC: I think this is an
+  internal issue w/ polymorphic types, but IDK
+  */
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
   #[for_type(LinkedList<B> => <B>)]
   #[for_type(LinkedList<C> => <C>)]
-  fn list_assoc<A, B, C>(m: LinkedList<A>) -> bool {
-    right_right_equal::<B, C>(
-      right_right_equal::<A, B>(m, f::<A, B>),
+  #[inductive(m: LinkedList<A>)]
+  fn list_assoc<A, B: PartialEq, C: PartialEq>() -> bool {
+    map_concat::<B, C>(
+      map_concat::<A, B>(m, f::<A, B>),
       g::<B, C>
-    ) == right_right_equal::<A, C>(
+    ) == map_concat::<A, C>(
       m,
       |x: A| {
-        right_right_equal::<B, C>(f::<A, B>(x), g::<B, C>)
+        map_concat::<B, C>(f::<A, B>(x), g::<B, C>)
       }
     )
   }

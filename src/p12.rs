@@ -44,43 +44,91 @@ mod p12 {
   use crate::poly_list::poly_linked_list::*;
 
   #[define]
+  #[derive(PartialEq, Clone)]
+  enum Int {
+    P,
+    N,
+    S(Box<Int>)
+  }
+
+  #[assume]
+  fn pm_zero() -> bool {
+    Int::N == Int::P
+  }
+
+  #[define]
   #[recursive]
-  fn filter<A: PartialEq + Clone>(p: fn(A) -> bool, x: LinkedList<A>) -> LinkedList<A> {
-    match x {
-      LinkedList::Nil => LinkedList::Nil,
-      LinkedList::Cons(y, xs) => if p(y.clone()) {
-        LinkedList::Cons(y, Box::new(filter::<A>(p, *xs)))
+  fn elem<T: PartialEq>(x: T, y: LinkedList<T>) -> bool {
+    match y {
+      LinkedList::<T>::Nil => false,
+      LinkedList::<T>::Cons(z, xs) => z == x || elem::<T>(x, *xs)
+    }
+  }
+
+  #[define]
+  #[recursive]
+  fn count<A: PartialEq>(x: A, y: LinkedList<A>) -> Int {
+    match y {
+      LinkedList::<A>::Nil => Int::P,
+      LinkedList::<A>::Cons(z, ys) => if x == z {
+        Int::S(Box::new(count::<A>(x, *ys)))
       } else {
-        filter(p, *xs)
+        count::<A>(x, *ys)
       }
     }
   }
 
-  // #[define]
-  // #[recursive]
-  // fn nub_by<A>(x: fn(A) -> fn(A) -> bool, y: LinkedList<A>) -> LinkedList<A> {
-  //   match y {
-  //     LinkedList::Nil => LinkedList::Nil,
-  //     LinkedList::Cons(z, xs) => LinkedList::Cons(
-  //       z,
-  //       Box::new(nub_by(
-  //         x,
-  //         filter(
-  //           |y2: A| {
-  //             !x(z)(y2)
-  //           },
-  //           *xs
-  //         )
-  //       ))
-  //     )
-  //   }
-  // }
+  #[define]
+  #[recursive]
+  #[total]
+  fn filter<A: PartialEq + Clone, F: Fn(A) -> bool>(p: F, x: LinkedList<A>) -> LinkedList<A> {
+    match x {
+      LinkedList::<A>::Nil => LinkedList::<A>::Nil,
+      LinkedList::<A>::Cons(y, xs) =>
+        if p(y.clone()) {
+          LinkedList::<A>::Cons(
+            y,
+            Box::new(
+              filter::<A, F>(p, *xs)
+            )
+          )
+        } else {
+          filter::<A, F>(p, *xs)
+        }
+    }
+  }
 
+  #[define]
+  #[recursive]
+  #[total]
+  fn nub_by<A: PartialEq + Clone, F2: Fn(A) -> bool, F: Fn(A) -> F2 + Clone>(x: F, y: LinkedList<A>) -> LinkedList<A> {
+    match y {
+      LinkedList::Nil => LinkedList::Nil,
+      LinkedList::Cons(z, xs) => LinkedList::Cons(
+        z.clone(),
+        Box::new(nub_by(
+          x.clone(),
+          filter(
+            |y2: A| {
+              !x(z.clone())(y2)
+            },
+            *xs
+          )
+        ))
+      )
+    }
+  }
+
+  /*
+  Non-thunk in Force position????
+  IDK what that means
+  */
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
-  fn p12<A>(x: A, xs: LinkedList<A>) -> bool {
+  #[inductive(xs: LinkedList<A>)]
+  fn p12<A: PartialEq>(x: A) -> bool {
     implies(
-      elem(x, xs),
+      elem::<A>(x, xs),
       count(
         x,
         nub_by(
@@ -88,9 +136,10 @@ mod p12 {
             |z: A| {
               y == z
             }
-          }
+          },
+          xs
         )
-      ) == Nat::S(Nat::Z)
+      ) == Int::S(Int::P)
     )
   }
 }

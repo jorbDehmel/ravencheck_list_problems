@@ -38,8 +38,12 @@
 #[allow(dead_code)]
 #[allow(unused_imports)]
 mod p5 {
-  #[import]
-  use crate::poly_list::poly_linked_list::*;
+  #[define]
+  #[derive(PartialEq, Clone)]
+  pub enum LinkedList<T> {
+    Nil,
+    Cons(T, Box<LinkedList<T>>),
+  }
 
   #[define]
   #[derive(PartialEq, Clone)]
@@ -92,7 +96,8 @@ mod p5 {
 
   #[annotate]
   #[for_type(LinkedList<T> => <T>)]
-  fn list_select<T: PartialEq + Clone>(xs: LinkedList<T>) -> bool {
+  #[inductive(xs: LinkedList<T>)]
+  fn list_select<T: PartialEq + Clone>() -> bool {
     map::<T>(
       |x: Pair<T, LinkedList<T>>| {
         match x {
