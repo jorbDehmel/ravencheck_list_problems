@@ -38,12 +38,4 @@ week. To ensure this is true, I am logging my hours here.
  2/22/26 | 11:00 PM | 12:30 AM | 44.5 hours | Got p8 working!!!
  2/27/26 | 11:00 AM | 12:30 PM | 46 hours   | Got p11, p5 working, meeting
  2/28/26 | 8:00 PM  | 9:00 PM  | 47 hours   | Got p43, p44 working
-
-# TODO
-
-Write at all:
-- p16-42
-
-Get working:
-- p10
-- p12-42
+ 3/1/26  | 1:00 PM  | 2:00 PM  | 48 hours   | Worked a bit on various problems

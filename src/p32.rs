@@ -33,4 +33,8 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p32 {
+  #[annotate]
+  fn unimplemented() -> bool {
+    false
+  }
 }

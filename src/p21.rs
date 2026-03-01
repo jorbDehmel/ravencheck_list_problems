@@ -56,6 +56,125 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p21 {
-  // #[import]
-  // use crate::poly_list::poly_linked_list::*;
+  #[define]
+  enum Pair<F, S> {
+    Pair2(F, S)
+  }
+
+  #[define]
+  enum LinkedList<A> {
+    Nil,
+    Cons(A, Box<LinkedList<A>>)
+  }
+
+  #[define]
+  enum Nat {
+    Z,
+    S(Box<Nat>)
+  }
+
+  #[define]
+  #[recursive]
+  fn pairs<A>(x: LinkedList<A>) -> LinkedList<Pair<A, A>> {
+    match x {
+      LinkedList::<A>::Nil => LinkedList::<Pair<A, A>>::Nil,
+      LinkedList::<A>::Cons(y, z) => match *z {
+        LinkedList::<A>::Nil => LinkedList::<Pair<A, A>>::Nil,
+        LinkedList::<A>::Cons(y2, xs) => LinkedList::<Pair<A, A>>::Cons(
+          Pair::<A, A>::Pair2(y, y2),
+          Box::new(pairs::<A>(*xs))
+        )
+      }
+    }
+  }
+
+  #[define]
+  #[recursive]
+  #[total]
+  fn unpair<A: PartialEq + Clone>(x: LinkedList<Pair<A, A>>) -> LinkedList<A> {
+    match x {
+      LinkedList::<Pair<A, A>>::Nil => LinkedList::<A>::Nil,
+      LinkedList::<Pair<A, A>>::Cons(data, next) => match data {
+        Pair::<A, A>::Pair2(first, second) =>
+          LinkedList::<A>::Cons(
+            first,
+            Box::new(
+              LinkedList::<A>::Cons(second,
+                Box::new(unpair::<A>(*next))
+              )
+            )
+          )
+      }
+    }
+  }
+
+  #[define]
+  #[recursive]
+  fn plus(x: Nat, y: Nat) -> Nat {
+    match x {
+      Nat::Z => y,
+      Nat::S(z) => Nat::S(Box::new(plus(*z, y)))
+    }
+  }
+
+  #[define]
+  #[recursive]
+  fn length<A>(x: LinkedList<A>) -> Nat {
+    match x {
+      LinkedList::<A>::Nil => Nat::Z,
+      LinkedList::<A>::Cons(_data, l) =>
+        Nat::S(Box::new(length::<A>(*l)))
+    }
+  }
+
+  #[define]
+  #[recursive]
+  fn even(x: Nat) -> bool {
+    match x {
+      Nat::Z => true,
+      Nat::S(y) => !even(*y)
+    }
+  }
+
+  //////////////////////////////////////////////////////////////
+
+  #[annotate]
+  #[for_type(LinkedList<A> => <A>)]
+  #[inductive(xs: LinkedList<A>)]
+  fn p21_1<A>() -> bool {
+    implies(
+      if even(length::<A>(xs)) {
+        Nat::Z
+      } else {
+        Nat::S(Nat::Z)
+      } == Nat::Z,
+      unpair::<A>(
+        pairs::<A>(xs)
+      ) == xs
+    )
+  }
+
+  #[annotate]
+  #[inductive(x: Nat, y: Nat, z: Nat)]
+  fn p21_2() -> bool {
+    plus(x, plus(y, z)) == plus(plus(x, y), z)
+  }
+
+  #[annotate]
+  #[inductive(x: Nat, y: Nat)]
+  fn p21_3() -> Nat {
+    plus(x, y) == plus(y, x)
+  }
+
+  #[annotate]
+  #[inductive(x: Nat)]
+  fn p21_4() -> bool {
+    plus(x, Nat::Z) == x
+  }
+
+  #[annotate]
+  #[inductive(x: Nat)]
+  fn p21_5() -> bool {
+    plus(Nat::Z, x) == x
+  }
 }

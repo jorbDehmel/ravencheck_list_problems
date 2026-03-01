@@ -17,8 +17,8 @@ problems.
  count_nub.smt2               | p12.rs |                   |
  deleteAll_count.smt2         | p13.rs |                   |
  elem.smt2                    | p14.rs |                   |
- elem_map.smt2                | p15.rs |                   |
- elem_nub_l.smt2              | p16.rs |                   | Sort cycles in main VC
+ elem_map.smt2                | p15.rs |                   | Sort cycles in main VC
+ elem_nub_l.smt2              | p16.rs |                   |
  elem_nub_r.smt2              | p17.rs |                   |
  nat_PairUnpair.smt2          | p21.rs |                   |
  nat_Select.smt2              | p22.rs |                   |
@@ -27,7 +27,7 @@ problems.
  nat_count_nub.smt2           | p27.rs |                   |
  nat_deleteAll_count.smt2     | p28.rs |                   |
  nat_elem.smt2                | p29.rs |                   |
- nat_elem_map.smt2            | p30.rs |                   |
+ nat_elem_map.smt2            | p30.rs |                   | Sort cycles in main VC
  nat_elem_nub_l.smt2          | p31.rs |                   |
  nat_elem_nub_r.smt2          | p32.rs |                   |
  nat_nub_nub.smt2             | p33.rs |                   |
@@ -47,9 +47,7 @@ problems.
 
 ## Problems ignored
 
-For now, ravencheck doesn't support codependent functions.
-Therefore, I am ignoring problems including them. The following
-files have unsupported features.
+The following files have unsupported features.
 
  Problem file             | File
 --------------------------|--------

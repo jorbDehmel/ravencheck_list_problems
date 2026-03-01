@@ -29,49 +29,8 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p29 {
-  #[import]
-  use crate::poly_list::poly_linked_list::*;
-
-  #[import]
-  use crate::nat::nat::*;
-
-  // Needed because ravencheck doesn't know about Option<T> and
-  // we can't simply ensure that some UNDEFINED exists in T
-  #[define]
-  #[derive(PartialEq, Clone)]
-  enum MyOpt<T> {
-    Some(T),
-    None
-  }
-
-  #[define]
-  fn is_eq<T: PartialEq>(x: T, y: MyOpt<T>) -> bool {
-    match y {
-      MyOpt::<T>::None => false,
-      MyOpt::<T>::Some(val) => x == val
-    }
-  }
-
-  #[define]
-  #[recursive]
-  fn at<T: PartialEq + Clone>(x: LinkedList<T>, y: Nat) -> MyOpt<T> {
-    match x {
-      LinkedList::<T>::Nil => MyOpt::<T>::None,
-      LinkedList::<T>::Cons(z, x2) => match y {
-        Nat::Z => MyOpt::<T>::Some(z),
-        Nat::S(x3) => at::<T>(*x2, *x3)
-      }
-    }
-  }
-
   #[annotate]
-  #[for_type(LinkedList<T> => <T>)]
-  fn f<T: PartialEq + Clone>(x: T, xs: LinkedList<T>) -> bool {
-    implies(
-      elem::<T>(x, xs),
-      exists(|y: Nat| {
-        is_eq::<T>(x, at::<T>(xs, y))
-      })
-    )
+  fn unimplemented() -> bool {
+    false
   }
 }

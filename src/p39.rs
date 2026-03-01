@@ -37,4 +37,8 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p39 {
+  #[annotate]
+  fn unimplemented() -> bool {
+    false
+  }
 }

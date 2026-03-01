@@ -43,12 +43,6 @@ mod p10 {
     }
   }
 
-  /*
-  Given a list and a function mapping list entries to new lists,
-  return the concatenation of the lists created by applying the
-  function to each entry in succession. This is ">>=" in the
-  TIP specs.
-  */
   #[define]
   #[recursive]
   fn map_concat<A, B: PartialEq>(x: LinkedList<A>,
