@@ -28,4 +28,51 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p44 {
+  #[define]
+  #[derive(PartialEq, Clone)]
+  pub enum LinkedList<T> {
+    Nil,
+    Cons(T, Box<LinkedList<T>>),
+  }
+
+  #[define]
+  #[recursive]
+  pub fn append<A>(x: LinkedList<A>, y: LinkedList<A>) -> LinkedList<A> {
+    match x {
+      LinkedList::<A>::Nil => y,
+      LinkedList::<A>::Cons(z, xs) => LinkedList::<A>::Cons(z, Box::new(append::<A>(*xs, y)))
+    }
+  }
+
+  // Note: Due to typing issues w/ ravencheck, I had to replace
+  // the generic B with its only instantiation here.
+  #[define]
+  #[recursive]
+  fn map_concat<A: PartialEq>(x: LinkedList<A>,
+      y: fn(A) -> LinkedList<A>) -> LinkedList<A> {
+    match x {
+      LinkedList::<A>::Nil => LinkedList::<A>::Nil,
+      LinkedList::<A>::Cons(z, xs) => append::<A>(
+        y(z),
+        map_concat::<A>(*xs, y)
+      )
+    }
+  }
+
+  #[define]
+  fn return_fn<A>(x: A) -> LinkedList<A> {
+    LinkedList::<A>::Cons(x, Box::new(LinkedList::<A>::Nil))
+  }
+
+  #[annotate]
+  #[for_type(LinkedList<A> => <A>)]
+  #[inductive(xs: LinkedList<A>)]
+  fn p44<A>() -> bool {
+    map_concat::<A>(
+      xs,
+      |x: A| {
+        return_fn::<A>(x)
+      }
+    ) == xs
+  }
 }

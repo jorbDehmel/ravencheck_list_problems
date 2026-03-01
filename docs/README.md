@@ -35,13 +35,13 @@ derived. This work would implement these problems and evaluate
 - 4/24/26: Final report due
 
 Interpolating:
-- 1/16/26 (requirement): 1
+- 1/16/26 (requirement): 1 (IRL, 1)
 - 1/23/26: 4
 - 1/30/26: 7
 - 2/06/26: 11
 - 2/13/26: 15
 - 2/20/26: 19
-- 2/27/26 (requirement): 23
+- 2/27/26 (requirement): 23 (IRL, 5)
 - 3/06/26: 27
 - 3/13/26 (break): 31
 - 3/20/26: 35

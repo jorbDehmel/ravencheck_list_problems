@@ -37,13 +37,13 @@ week. To ensure this is true, I am logging my hours here.
  2/22/26 | 7:00 PM  | 10:00 PM | 43 hours   | Worked on p8
  2/22/26 | 11:00 PM | 12:30 AM | 44.5 hours | Got p8 working!!!
  2/27/26 | 11:00 AM | 12:30 PM | 46 hours   | Got p11, p5 working, meeting
+ 2/28/26 | 8:00 PM  | 9:00 PM  | 47 hours   | Got p43, p44 working
 
 # TODO
 
 Write at all:
-- p12-13
-- p16-29
-- p30-46
+- p16-42
 
 Get working:
-- Everything but p4, p5, p8, p9, p11
+- p10
+- p12-42

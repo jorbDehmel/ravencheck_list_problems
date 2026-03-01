@@ -40,8 +40,8 @@ problems.
  perm_refl.smt2               | p40.rs |                   |
  perm_symm.smt2               | p41.rs |                   |
  perm_trans.smt2              | p42.rs |                   |
- return_1.smt2                | p43.rs |                   |
- return_2.smt2                | p44.rs |                   |
+ return_1.smt2                | p43.rs | 1                 | 0.06s
+ return_2.smt2                | p44.rs | 0                 | 0.04s
  weird_concat_map_bind.smt2   | p45.rs |                   |
  weird_is_normal.smt2         | p46.rs |                   |
 
