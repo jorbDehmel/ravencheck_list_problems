@@ -39,3 +39,5 @@ week. To ensure this is true, I am logging my hours here.
  2/27/26 | 11:00 AM | 12:30 PM | 46 hours   | Got p11, p5 working, meeting
  2/28/26 | 8:00 PM  | 9:00 PM  | 47 hours   | Got p43, p44 working
  3/1/26  | 1:00 PM  | 2:00 PM  | 48 hours   | Worked a bit on various problems
+ 3/2/26  | 7:00 PM  | 8:00 PM  | 49 hours   | Set up more problems
+ 3/5/26  | 12:00 PM | 2:00 PM  | 51 hours   | Got p22 working

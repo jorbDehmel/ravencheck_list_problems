@@ -96,13 +96,13 @@ mod p46 {
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
   #[inductive(x: LinkedList<A>)]
-  fn append_to_nil<A>() -> bool {
+  fn lemma_1<A>() -> bool {
     x == append::<A>(LinkedList::<A>::Nil, x)
   }
 
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
-  fn nil_case<A>() -> bool {
+  fn lemma_2<A>() -> bool {
     normal_concat::<A>(LinkedList::<LinkedList<A>>::Nil)
     ==
     weird_concat::<A>(LinkedList::<LinkedList<A>>::Nil)
@@ -110,33 +110,39 @@ mod p46 {
 
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
-  fn cons_nil<A>() -> bool {
-    normal_concat::<A>(
-      LinkedList::<LinkedList<A>>::Cons(
-        LinkedList::<A>::Nil,
-        LinkedList::<LinkedList<A>>::Nil
-      )
-    ) == weird_concat::<A>(
-      LinkedList::<LinkedList<A>>::Cons(
-        LinkedList::<A>::Nil,
-        LinkedList::<LinkedList<A>>::Nil
+  #[inductive(a: LinkedList<A>, b: LinkedList<A>)]
+  fn append_one_identity<A>(z: A) -> bool {
+    append::<A>(LinkedList::<A>::Cons(z, a), b)
+    ==
+    LinkedList::<A>::Cons(z, append::<A>(a, b))
+  }
+
+  #[annotate]
+  #[for_type(LinkedList<A> => <A>)]
+  #[inductive(xs: LinkedList<A>)]
+  fn lemma_4<A>(z: A) -> bool {
+    append::<A>(
+      LinkedList::<A>::Cons(z, xs),
+      normal_concat::<A>(LinkedList::<LinkedList<A>>::Nil)
+    ) == LinkedList::<A>::Cons(
+      z,
+      weird_concat::<A>(
+        LinkedList::<LinkedList<A>>::Cons(xs, LinkedList::<LinkedList<A>>::Nil)
       )
     )
   }
 
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
-  #[inductive(x: LinkedList<LinkedList<A>>)]
-  fn cons_cons<A>() -> bool {
-    normal_concat::<A>(
-      LinkedList::<LinkedList<A>>::Cons(
-        LinkedList::<A>::Nil,
-        x
-      )
-    ) == weird_concat::<A>(
-      LinkedList::<LinkedList<A>>::Cons(
-        LinkedList::<A>::Nil,
-        x
+  #[inductive(xs: LinkedList<A>, x: LinkedList<LinkedList<A>>)]
+  fn lemma_3<A>(z: A) -> bool {
+    append::<A>(
+      LinkedList::<A>::Cons(z, xs),
+      normal_concat::<A>(x)
+    ) == LinkedList::<A>::Cons(
+      z,
+      weird_concat::<A>(
+        LinkedList::<LinkedList<A>>::Cons(xs, x)
       )
     )
   }

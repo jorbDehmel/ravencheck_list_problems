@@ -38,8 +38,73 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p22 {
+  #[define]
+  #[derive(PartialEq, Clone)]
+  pub enum LinkedList<T> {
+    Nil,
+    Cons(T, Box<LinkedList<T>>),
+  }
+
+  #[define]
+  #[derive(PartialEq, Clone)]
+  enum Pair<F, S> {
+    Pair2(F, S)
+  }
+
+  #[define]
+  #[recursive]
+  fn select<T: PartialEq + Clone>(x: T, y: LinkedList<Pair<T, LinkedList<T>>>) -> LinkedList<Pair<T, LinkedList<T>>> {
+    match y {
+      LinkedList::<Pair<T, LinkedList<T>>>::Nil =>
+        LinkedList::<Pair<T, LinkedList<T>>>::Nil,
+      LinkedList::<Pair<T, LinkedList<T>>>::Cons(z, x2) =>
+        match z {
+          Pair::<T, LinkedList<T>>::Pair2(y2, ys) =>
+            LinkedList::<Pair<T, LinkedList<T>>>::Cons(
+              Pair::<T, LinkedList<T>>::Pair2(
+                y2,
+                LinkedList::<T>::Cons(x.clone(), Box::new(ys))
+              ),
+              Box::new(select::<T>(x, *x2))
+            )
+        }
+    }
+  }
+
+  #[define]
+  #[recursive]
+  fn select2<T: PartialEq + Clone>(x: LinkedList<T>) -> LinkedList<Pair<T, LinkedList<T>>> {
+    match x {
+      LinkedList::<T>::Nil =>
+        LinkedList::<Pair<T, LinkedList<T>>>::Nil,
+      LinkedList::<T>::Cons(y, xs) =>
+        LinkedList::<Pair<T, LinkedList<T>>>::Cons(
+          Pair::<T, LinkedList<T>>::Pair2(y.clone(), *xs.clone()),
+          Box::new(select::<T>(y, select2::<T>(*xs)))
+        )
+    }
+  }
+
+  #[define]
+  #[recursive]
+  fn map<T: PartialEq + Clone>(f: fn(Pair<T, LinkedList<T>>) -> T, x: LinkedList<Pair<T, LinkedList<T>>>) -> LinkedList<T> {
+    match x {
+      LinkedList::<Pair<T, LinkedList<T>>>::Nil => LinkedList::<T>::Nil,
+      LinkedList::<Pair<T, LinkedList<T>>>::Cons(y, xs) => LinkedList::<T>::Cons(f(y), Box::new(map::<T>(f, *xs)))
+    }
+  }
+
   #[annotate]
-  fn unimplemented() -> bool {
-    false
+  #[for_type(LinkedList<T> => <T>)]
+  #[inductive(xs: LinkedList<T>)]
+  fn p22<T>() -> bool {
+    map::<T>(
+      |x: Pair::<T, LinkedList<T>>| {
+        match x {
+          Pair::<T, LinkedList<T>>::Pair2(y, z) => y
+        }
+      },
+      select2::<T>(xs)
+    ) == xs
   }
 }

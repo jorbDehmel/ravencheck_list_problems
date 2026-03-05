@@ -12,18 +12,18 @@ problems.
  Select.smt2                  | p5.rs  | 0                 | 0.11s
  append_inj_1.smt2            | p8.rs  | 5                 | 0.37s
  append_inj_2.smt2            | p9.rs  | 0                 | 0.09s
- assoc.smt2                   | p10.rs |                   |
+ assoc.smt2                   | p10.rs |                   | Type issues
  concat_map_bind.smt2         | p11.rs | 0                 | 0.13s
- count_nub.smt2               | p12.rs |                   |
+ count_nub.smt2               | p12.rs |                   | Type issues
  deleteAll_count.smt2         | p13.rs |                   |
- elem.smt2                    | p14.rs |                   |
+ elem.smt2                    | p14.rs |                   | Sort cycles in main VC
  elem_map.smt2                | p15.rs |                   | Sort cycles in main VC
- elem_nub_l.smt2              | p16.rs |                   |
- elem_nub_r.smt2              | p17.rs |                   |
- nat_PairUnpair.smt2          | p21.rs |                   |
- nat_Select.smt2              | p22.rs |                   |
+ elem_nub_l.smt2              | p16.rs |                   | Type issues
+ elem_nub_r.smt2              | p17.rs |                   | Type issues
+ nat_PairUnpair.smt2          | p21.rs |                   | Type issues
+ nat_Select.smt2              | p22.rs | 0                 | 0.10s
  nat_SelectPermutations'.smt2 | p23.rs |                   |
- nat_SelectPermutations.smt2  | p24.rs |                   |
+ nat_SelectPermutations.smt2  | p24.rs |                   | Type issues
  nat_count_nub.smt2           | p27.rs |                   |
  nat_deleteAll_count.smt2     | p28.rs |                   |
  nat_elem.smt2                | p29.rs |                   |
@@ -36,13 +36,13 @@ problems.
  nat_perm_symm.smt2           | p36.rs |                   |
  nat_perm_trans.smt2          | p37.rs |                   |
  nub_nub.smt2                 | p38.rs |                   |
- perm_elem.smt2               | p39.rs |                   |
- perm_refl.smt2               | p40.rs |                   |
- perm_symm.smt2               | p41.rs |                   |
- perm_trans.smt2              | p42.rs |                   |
+ perm_elem.smt2               | p39.rs |                   | Type issues
+ perm_refl.smt2               | p40.rs |                   | Type issues
+ perm_symm.smt2               | p41.rs |                   | Type issues
+ perm_trans.smt2              | p42.rs |                   | Type issues
  return_1.smt2                | p43.rs | 1                 | 0.06s
  return_2.smt2                | p44.rs | 0                 | 0.04s
- weird_concat_map_bind.smt2   | p45.rs |                   |
+ weird_concat_map_bind.smt2   | p45.rs |                   | Type issues
  weird_is_normal.smt2         | p46.rs |                   |
 
 ## Problems ignored

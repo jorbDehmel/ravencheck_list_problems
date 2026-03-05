@@ -50,14 +50,16 @@ mod p14 {
   }
 
   #[define]
+  #[recursive]
   fn is_positive(x: Int) -> bool {
     match x {
-      Int::S(previous) => match *previous {
+      Int::S(previous) => match *previous.clone() {
         Int::P => true,
         Int::N => false,
-        _ => is_positive(*previous)
+        Int::S(_prev) => is_positive(*previous)
       },
-      _ => false
+      Int::P => false,
+      Int::N => false
     }
   }
 
@@ -67,7 +69,8 @@ mod p14 {
   fn previous(x: Int) -> Int {
     match x {
       Int::S(p) => *p,
-      _ => x
+      Int::N => x,
+      Int::P => x
     }
   }
 
@@ -76,7 +79,7 @@ mod p14 {
     match x {
       Int::P => true,
       Int::N => true,
-      _ => false
+      Int::S(_prev) => false
     }
   }
 
@@ -108,7 +111,7 @@ mod p14 {
           MyOpt::<T>::Some(z)
         } else {
           if is_positive(y.clone()) {
-            at(*x2, previous(y))
+            at::<T>(*x2, previous(y))
           } else {
             MyOpt::<T>::None
           }
@@ -116,13 +119,9 @@ mod p14 {
     }
   }
 
-  // (prove
-  //   (par (a)
-  //     (forall ((x a) (xs (list a)))
-  //       (=> (elem x xs) (exists ((y Int)) (= x (at xs y)))))))
   #[annotate]
   #[for_type(LinkedList<T> => <T>)]
-  fn f<T: PartialEq + Clone>(x: T, xs: LinkedList<T>) -> bool {
+  fn p14<T: PartialEq + Clone>(x: T, xs: LinkedList<T>) -> bool {
     implies(
       elem::<T>(x, xs),
       exists(|y: Int| {
