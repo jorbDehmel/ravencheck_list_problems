@@ -29,8 +29,49 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p29 {
-  #[annotate]
-  fn unimplemented() -> bool {
-    false
+  #[define]
+  #[derive(PartialEq, Clone)]
+  pub enum LinkedList<T> {
+    Nil,
+    Cons(T, Box<LinkedList<T>>),
   }
+
+  #[define]
+  #[derive(PartialEq, Clone)]
+  enum MyOpt<T> {
+    Some(T),
+    None
+  }
+
+  #[define]
+  pub enum Nat {
+    Z,
+    S(Box<Nat>)
+  }
+
+  /*
+  (define-fun-rec
+    elem
+    (par (a) (((x a) (y (list a))) Bool))
+    (match y
+      ((nil false)
+      ((cons z xs) (or (= z x) (elem x xs))))))
+  */
+  /*
+  (define-fun-rec
+    at
+    (par (a) (((x (list a)) (y Nat)) a))
+    (match x
+      ((nil (_ undefined a))
+      ((cons z x2)
+        (match y
+          ((zero z)
+          ((succ x3) (at x2 x3))))))))
+  */
+  /*
+  (prove
+    (par (a)
+      (forall ((x a) (xs (list a)))
+        (=> (elem x xs) (exists ((y Nat)) (= x (at xs y)))))))
+  */
 }

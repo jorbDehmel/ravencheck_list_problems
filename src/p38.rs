@@ -29,8 +29,61 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p38 {
+  #[derive(PartialEq)]
+  #[define]
+  pub enum LinkedList<T> {
+    Nil,
+    Cons(T, Box<LinkedList<T>>),
+  }
+
+  #[define]
+  #[recursive]
+  #[total]
+  fn filter<A: PartialEq + Clone, F: Fn(A) -> bool>(p: F, x: LinkedList<A>) -> LinkedList<A> {
+    match x {
+      LinkedList::<A>::Nil => LinkedList::<A>::Nil,
+      LinkedList::<A>::Cons(y, xs) =>
+        if p(y.clone()) {
+          LinkedList::<A>::Cons(
+            y,
+            Box::new(
+              filter::<A, F>(p, *xs)
+            )
+          )
+        } else {
+          filter::<A, F>(p, *xs)
+        }
+    }
+  }
+
+  #[define]
+  #[recursive]
+  #[total]
+  fn nub_by<A: PartialEq + Clone, F2: Fn(A) -> bool, F: Fn(A) -> F2 + Clone>(x: F, y: LinkedList<A>) -> LinkedList<A> {
+    match y {
+      LinkedList::Nil => LinkedList::Nil,
+      LinkedList::Cons(z, xs) => LinkedList::Cons(
+        z.clone(),
+        Box::new(nub_by(
+          x.clone(),
+          filter(
+            |y2: A| {
+              !x(z.clone())(y2)
+            },
+            *xs
+          )
+        ))
+      )
+    }
+  }
+
   #[annotate]
-  fn unimplemented() -> bool {
-    false
+  #[for_type(LinkedList<A> => <A>)]
+  #[inductive(xs: LinkedList<A>)]
+  fn p38<A>() -> bool {
+    nub_by(
+      |x: A| {|y: A| { x == y }},
+      nub_by(|z: A| {|x2: A| { z == x2 }}, xs)
+    ) == nub_by(|x3: A| {|x4: A| { x3 == x4 }}, xs)
   }
 }
