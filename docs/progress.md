@@ -24,8 +24,8 @@ problems.
  nat_Select.smt2              | p22.rs | 0                 | 0.10s
  nat_SelectPermutations.smt2  | p24.rs |                   | Type issues
  nat_count_nub.smt2           | p27.rs |                   | Type issues
- nat_deleteAll_count.smt2     | p28.rs |                   | Unimplemented
- nat_elem.smt2                | p29.rs |                   | Unimplemented
+ nat_deleteAll_count.smt2     | p28.rs |                   | Type issues
+ nat_elem.smt2                | p29.rs |                   | Sort cycles in main VC
  nat_elem_map.smt2            | p30.rs |                   | Sort cycles in main VC
  nat_elem_nub_l.smt2          | p31.rs |                   | Type issues
  nat_elem_nub_r.smt2          | p32.rs |                   | Type issues

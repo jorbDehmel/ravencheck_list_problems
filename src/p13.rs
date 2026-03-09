@@ -35,20 +35,66 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p13 {
-  #[import]
-  use crate::poly_list::poly_linked_list::*;
+  #[define]
+  #[derive(PartialEq, Clone)]
+  pub enum LinkedList<T> {
+    Nil,
+    Cons(T, Box<LinkedList<T>>),
+  }
+
+  #[define]
+  #[derive(PartialEq, Clone)]
+  enum Nat {
+    Z,
+    S(Box<Nat>)
+  }
 
   #[define]
   #[derive(PartialEq, Clone)]
   enum Int {
-    P,
-    N,
-    S(Box<Int>)
+    Positive(Box<Nat>),
+    Negative(Box<Nat>)
   }
 
-  #[assume]
-  fn pm_zero() -> bool {
-    Int::N == Int::P
+  // Maps an integer to its successor
+  #[define]
+  fn int_succ(x: Int) -> Int {
+    match x {
+      Int::Positive(x_data) =>
+        Int::Positive(Box::new(Nat::S(Box::new(*x_data)))),
+      Int::Negative(x_data) =>
+        match *x_data {
+          Nat::Z => Int::Positive(Box::new(Nat::S(Box::new(Nat::Z)))),
+          Nat::S(x_data_prev) => Int::Negative(Box::new(*x_data_prev))
+        }
+    }
+  }
+
+  #[define]
+  #[recursive]
+  fn leq_nat(x: Nat, y: Nat) -> bool {
+    match x {
+      Nat::Z => true,
+      Nat::S(z) => match y {
+        Nat::Z => false,
+        Nat::S(x2) => leq_nat(*z, *x2)
+      }
+    }
+  }
+
+  #[define]
+  fn leq(x: Int, y: Int) -> bool {
+    match x {
+      Int::Positive(x_data) => match y {
+        Int::Positive(y_data) => leq_nat(*x_data, *y_data),
+        Int::Negative(y_data) =>
+          (*x_data == Nat::Z) && (*y_data == Nat::Z)
+      },
+      Int::Negative(x_data) => match y {
+        Int::Positive(_y_data) => true,
+        Int::Negative(y_data) => leq_nat(*y_data, *x_data)
+      }
+    }
   }
 
   #[define]
@@ -69,9 +115,9 @@ mod p13 {
   #[recursive]
   fn count<A: PartialEq>(x: A, y: LinkedList<A>) -> Int {
     match y {
-      LinkedList::<A>::Nil => Int::P,
+      LinkedList::<A>::Nil => Int::Positive(Box::new(Nat::Z)),
       LinkedList::<A>::Cons(z, ys) => if x == z {
-        Int::S(Box::new(count::<A>(x, *ys)))
+        int_succ(count::<A>(x, *ys))
       } else {
         count::<A>(x, *ys)
       }
@@ -96,9 +142,9 @@ mod p13 {
   #[inductive(xs: LinkedList<A>)]
   fn p13<A: PartialEq + Clone>(x: A) -> bool {
     implies(
-      deleteAll(x, xs)
+      delete_all::<A>(x, xs)
       ==
-      deleteBy(
+      delete_by::<A>(
         |y: A| {
           |z: A| {
             y == z
@@ -107,9 +153,9 @@ mod p13 {
         x,
         xs
       ),
-      le(
+      leq(
         count::<A>(x, xs),
-        Int::S(Int::P)
+        Int::Positive(Box::new(Nat::S(Box::new(Nat::Z))))
       )
     )
   }

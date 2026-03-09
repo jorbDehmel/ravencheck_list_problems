@@ -25,7 +25,7 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p10 {
-  #[derive(PartialEq)]
+  #[derive(PartialEq, Clone)]
   #[define]
   pub enum LinkedList<T> {
     Nil,
@@ -75,12 +75,31 @@ mod p10 {
   #[inductive(m: LinkedList<A>)]
   fn list_assoc<A, B: PartialEq, C: PartialEq>() -> bool {
     map_concat::<B, C>(
-      map_concat::<A, B>(m, f::<A, B>),
+      map_concat::<A, B>(m.clone(), f::<A, B>),
       g::<B, C>
     ) == map_concat::<A, C>(
       m,
       |x: A| {
         map_concat::<B, C>(f::<A, B>(x), g::<B, C>)
+      }
+    )
+  }
+
+  fn f_typecheck<A, B>(_: A) -> LinkedList<B> {
+    LinkedList::<B>::Nil
+  }
+  fn g_typecheck<B, C>(_: B) -> LinkedList<C> {
+    LinkedList::<C>::Nil
+  }
+
+  fn list_assoc_typecheck<A: Clone, B: PartialEq, C: PartialEq>(m: LinkedList<A>) -> bool {
+    map_concat::<B, C>(
+      map_concat::<A, B>(m.clone(), f_typecheck::<A, B>),
+      g_typecheck::<B, C>
+    ) == map_concat::<A, C>(
+      m,
+      |x: A| {
+        map_concat::<B, C>(f_typecheck::<A, B>(x), g_typecheck::<B, C>)
       }
     )
   }
