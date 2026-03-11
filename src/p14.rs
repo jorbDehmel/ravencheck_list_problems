@@ -93,14 +93,6 @@ mod p14 {
   }
 
   #[define]
-  fn is_eq<T: PartialEq>(x: T, y: MyOpt<T>) -> bool {
-    match y {
-      MyOpt::<T>::None => false,
-      MyOpt::<T>::Some(val) => x == val
-    }
-  }
-
-  #[define]
   #[recursive]
   fn at<T: PartialEq + Clone>(x: LinkedList<T>, y: Int) -> MyOpt<T> {
     match x {
@@ -125,7 +117,10 @@ mod p14 {
     implies(
       elem::<T>(x, xs),
       exists(|y: Int| {
-        is_eq::<T>(x, at::<T>(xs, y))
+        def_and_eq(
+          at::<T>(xs, y),
+          MyOpt::<T>::Some(x)
+        )
       })
     )
   }
