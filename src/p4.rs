@@ -63,7 +63,6 @@ mod p4 {
 
   #[define]
   #[recursive]
-  #[total]
   pub fn is_even(n: Nat) -> bool {
     match n {
       Nat::Z => true,
@@ -73,7 +72,6 @@ mod p4 {
 
   #[define]
   #[recursive]
-  #[total]
   fn pairs<T: PartialEq + Clone>(x: LinkedList<T>) -> LinkedList<Pair<T, T>> {
     match x {
       LinkedList::<T>::Nil => LinkedList::<Pair<T, T>>::Nil,
@@ -92,7 +90,6 @@ mod p4 {
 
   #[define]
   #[recursive]
-  #[total]
   fn unpair<T: PartialEq + Clone>(x: LinkedList<Pair<T, T>>) -> LinkedList<T> {
     match x {
       LinkedList::<Pair<T, T>>::Nil => LinkedList::<T>::Nil,
@@ -111,7 +108,6 @@ mod p4 {
 
   #[define]
   #[recursive]
-  #[total]
   fn length<T: PartialEq + Clone>(x: LinkedList<T>) -> Nat {
     match x {
       LinkedList::<T>::Nil => Nat::Z,
@@ -127,7 +123,6 @@ mod p4 {
 
   #[define]
   #[recursive]
-  #[total]
   fn list_len_is_even<T: PartialEq + Clone>(l: LinkedList<T>) -> bool {
     match l {
       LinkedList::<T>::Nil => true, // len 0 is even

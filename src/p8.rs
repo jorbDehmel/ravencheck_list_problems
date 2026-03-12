@@ -27,7 +27,6 @@ mod p8 {
 
   #[define]
   #[recursive]
-  #[total]
   pub fn append<T: PartialEq>(x: LinkedList<T>, y: LinkedList<T>) -> LinkedList<T> {
     match x {
       LinkedList::<T>::Nil => y,
@@ -41,7 +40,6 @@ mod p8 {
   // Returns true iff l1 is a suffix of l2
   #[define]
   #[recursive]
-  #[total]
   fn is_suffix_of<T: PartialEq>(l1: LinkedList<T>, l2: LinkedList<T>) -> bool {
     if l1 == l2 {
       true

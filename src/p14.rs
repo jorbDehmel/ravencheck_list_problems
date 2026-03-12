@@ -26,8 +26,19 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p14 {
-  #[import]
-  use crate::poly_list::poly_linked_list::*;
+  #[define]
+  #[derive(PartialEq, Clone)]
+  pub enum LinkedList<T> {
+    Nil,
+    Cons(T, Box<LinkedList<T>>),
+  }
+
+  #[define]
+  #[derive(PartialEq, Clone)]
+  enum MyOpt<T> {
+    Some(T),
+    None
+  }
 
   // Positive numbers are successors of P, negative numbers are
   // successors of N. Zero is the only number whose
@@ -83,13 +94,14 @@ mod p14 {
     }
   }
 
-  // This is the same as 29, but with integers instead of nats
-
   #[define]
-  #[derive(PartialEq, Clone)]
-  enum MyOpt<T> {
-    Some(T),
-    None
+  #[recursive]
+  pub fn elem<T: PartialEq>(x: T, y: LinkedList<T>) -> bool {
+    match y {
+      LinkedList::<T>::Nil => false,
+      LinkedList::<T>::Cons(z, xs) =>
+        z == x || elem::<T>(x, *xs)
+    }
   }
 
   #[define]
@@ -98,7 +110,6 @@ mod p14 {
     match x {
       LinkedList::<T>::Nil => MyOpt::<T>::None,
       LinkedList::<T>::Cons(z, x2) =>
-        // (ite (= y 0) z (ite (> y 0) (at x2 (- y 1)) (_ undefined a)
         if is_zero(y.clone()) {
           MyOpt::<T>::Some(z)
         } else {
@@ -113,7 +124,8 @@ mod p14 {
 
   #[annotate]
   #[for_type(LinkedList<T> => <T>)]
-  fn p14<T: PartialEq + Clone>(x: T, xs: LinkedList<T>) -> bool {
+  #[inductive(xs: LinkedList<T>)]
+  fn p14<T: PartialEq + Clone>(x: T) -> bool {
     implies(
       elem::<T>(x, xs),
       exists(|y: Int| {

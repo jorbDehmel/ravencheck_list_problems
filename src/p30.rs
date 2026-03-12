@@ -66,11 +66,11 @@ mod p30 {
   fn p30<A>(y: A) -> bool {
     implies(
       elem::<A>(y, map::<A>(f::<A>, xs)),
-      exists(|x: A| {
-        f::<A>(x) == y
-        &&
-        elem::<A>(y, xs)
-      })
+      exists(
+        |x: A| {
+          def_and_eq(f::<A>(x), y)
+        }
+      ) && elem::<A>(y, xs)
     )
   }
 }

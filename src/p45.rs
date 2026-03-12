@@ -114,8 +114,8 @@ mod p45 {
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
   #[inductive(xs: LinkedList<A>)]
-  fn p45<A, B: PartialEq>() -> bool {
-    weird_concat::<B>(map::<A, B>(f::<A, B>, xs))
+  fn p45<A: Clone, B: PartialEq>() -> bool {
+    weird_concat::<B>(map::<A, B>(f::<A, B>, xs.clone()))
     ==
     map_concat::<A, B>(xs, f::<A, B>)
   }

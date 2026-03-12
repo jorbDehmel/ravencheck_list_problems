@@ -18,7 +18,7 @@ problems.
  elem_map.smt2                | p15.rs |                   | Sort cycles in main VC
  nat_PairUnpair.smt2          | p21.rs |                   | Type issues
  nat_Select.smt2              | p22.rs | 0                 | 0.10s
- nat_elem.smt2                | p29.rs |                   | Sort cycles in main VC
+ nat_elem.smt2                | p29.rs |                   |
  nat_elem_map.smt2            | p30.rs |                   | Sort cycles in main VC
  return_1.smt2                | p43.rs | 1                 | 0.06s
  return_2.smt2                | p44.rs | 0                 | 0.04s

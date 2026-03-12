@@ -25,8 +25,12 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p15 {
-  #[import]
-  use crate::poly_list::poly_linked_list::*;
+  #[define]
+  #[derive(PartialEq, Clone)]
+  pub enum LinkedList<T> {
+    Nil,
+    Cons(T, Box<LinkedList<T>>),
+  }
 
   #[define]
   #[recursive]
@@ -50,7 +54,6 @@ mod p15 {
     }
   }
 
-  // Universally quantified function in the VC later
   #[declare]
   #[phantom]
   fn f<T>(_: T) -> T {}
@@ -61,9 +64,9 @@ mod p15 {
   fn list_elem_map<T>(y: T) -> bool {
     implies(
       elem::<T>(y, map::<T>(f::<T>, xs)),
-      exists (
+      exists(
         |x: T| {
-          f::<T>(x) == y
+          def_and_eq(f::<T>(x), y)
           &&
           elem::<T>(y, xs)
         }

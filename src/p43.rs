@@ -43,7 +43,6 @@ mod p43 {
 
   #[define]
   #[recursive]
-  #[total]
   fn map_concat<A, B: PartialEq>(x: LinkedList<A>,
       y: fn(A) -> LinkedList<B>) -> LinkedList<B> {
     match x {

@@ -147,7 +147,7 @@ mod p21 {
       // } else {
       //   Nat::S(Nat::Z)
       // } == Nat::Z,
-      // Cheater's method because the other doesn't work:
+      // Cheater's method because the other is unsupported:
       even(length::<A>(xs)),
       unpair::<A>(
         pairs::<A>(xs)

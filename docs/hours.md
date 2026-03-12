@@ -42,3 +42,5 @@ week. To ensure this is true, I am logging my hours here.
  3/2/26  | 7:00 PM  | 8:00 PM  | 49 hours   | Set up more problems
  3/5/26  | 12:00 PM | 2:00 PM  | 51 hours   | Got p22 working
  3/9/26  | 11:00 AM | 12:30 PM | 52.5 hours | Finished naive impls for all
+ 3/10/26 | 11:00 AM | 2:00 PM  | 55.5 hours | Got p14 working
+ 2/12/26 | 11:30 AM | 12:30 PM | 56.5 hours | Worked on p29

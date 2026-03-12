@@ -74,23 +74,18 @@ mod p29 {
     }
   }
 
-  #[define]
-  fn opt_eq<A: PartialEq>(a: A, b: MyOpt<A>) -> bool {
-    match b {
-      MyOpt::<A>::None => false,
-      MyOpt::<A>::Some(c) => a == c
-    }
-  }
-
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
   #[inductive(xs: LinkedList<A>)]
-  fn p29<A>(x: A) -> bool {
+  fn p29<A: PartialEq + Clone>(x: A) -> bool {
     implies(
       elem::<A>(x, xs),
       exists(
         |y: Nat| {
-          opt_eq::<A>(x, at::<A>(xs, y))
+          def_and_eq(
+            at::<A>(xs, y),
+            MyOpt::<A>::Some(x)
+          )
         }
       )
     )
