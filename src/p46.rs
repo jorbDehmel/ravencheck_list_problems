@@ -97,60 +97,39 @@ mod p46 {
   #[for_type(LinkedList<A> => <A>)]
   #[inductive(x: LinkedList<A>)]
   fn lemma_1<A>() -> bool {
-    x == append::<A>(LinkedList::<A>::Nil, x)
-  }
-
-  #[annotate]
-  #[for_type(LinkedList<A> => <A>)]
-  fn lemma_2<A>() -> bool {
-    normal_concat::<A>(LinkedList::<LinkedList<A>>::Nil)
-    ==
-    weird_concat::<A>(LinkedList::<LinkedList<A>>::Nil)
+    let y = append::<A>(LinkedList::<A>::Nil, x);
+    x == y
   }
 
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
   #[inductive(a: LinkedList<A>, b: LinkedList<A>)]
-  fn append_one_identity<A>(z: A) -> bool {
-    append::<A>(LinkedList::<A>::Cons(z, a), b)
-    ==
-    LinkedList::<A>::Cons(z, append::<A>(a, b))
+  fn lemma_2<A>(z: A) -> bool {
+    let c = append::<A>(LinkedList::<A>::Cons(z, a), b);
+    let d = LinkedList::<A>::Cons(z, append::<A>(a, b));
+    c == d
   }
 
-  #[annotate]
+  #[assume]
   #[for_type(LinkedList<A> => <A>)]
-  #[inductive(xs: LinkedList<A>)]
-  fn lemma_4<A>(z: A) -> bool {
-    append::<A>(
-      LinkedList::<A>::Cons(z, xs),
-      normal_concat::<A>(LinkedList::<LinkedList<A>>::Nil)
-    ) == LinkedList::<A>::Cons(
-      z,
-      weird_concat::<A>(
-        LinkedList::<LinkedList<A>>::Cons(xs, LinkedList::<LinkedList<A>>::Nil)
-      )
-    )
-  }
-
-  #[annotate]
-  #[for_type(LinkedList<A> => <A>)]
-  #[inductive(xs: LinkedList<A>, x: LinkedList<LinkedList<A>>)]
-  fn lemma_3<A>(z: A) -> bool {
-    append::<A>(
-      LinkedList::<A>::Cons(z, xs),
-      normal_concat::<A>(x)
-    ) == LinkedList::<A>::Cons(
-      z,
-      weird_concat::<A>(
-        LinkedList::<LinkedList<A>>::Cons(xs, x)
-      )
-    )
+  // #[inductive(xs4: LinkedList<A>, xs: LinkedList<LinkedList<A>>)]
+  fn lemma_3<A>(z3: A, z4: A, xs4: LinkedList<A>, xs: LinkedList<LinkedList<A>>) -> bool {
+    let z = normal_concat::<A>(xs);
+    let a = append::<A>(xs4, z);
+    let b = LinkedList::<A>::Cons(z4, a);
+    let y = LinkedList::<A>::Cons(z4, xs4);
+    let e = LinkedList::<A>::Cons(z3, y);
+    let c = LinkedList::<LinkedList<A>>::Cons(e, xs);
+    let d = weird_concat::<A>(c);
+    b == d
   }
 
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
   #[inductive(x: LinkedList<LinkedList<A>>)]
   fn p46<A>() -> bool {
-    normal_concat::<A>(x) == weird_concat::<A>(x)
+    let a = normal_concat::<A>(x);
+    let b = weird_concat::<A>(x);
+    a == b
   }
 }

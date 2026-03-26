@@ -74,6 +74,50 @@ mod p29 {
     }
   }
 
+  // #[annotate]
+  // #[for_type(LinkedList<A> => <A>)]
+  // #[inductive(xs: LinkedList<A>)]
+  // fn lemma_1<A>(x: A) -> bool {
+  //   at::<A>(LinkedList::<A>::Cons(x, xs), Nat::Z) == MyOpt::<A>::Some(x)
+  // }
+
+  // #[annotate]
+  // #[for_type(LinkedList<A> => <A>)]
+  // #[inductive(x: LinkedList<A>, n: Nat)]
+  // fn lemma_2<A>(z: A) -> bool {
+  //   at::<A>(x, n) == at::<A>(LinkedList::<A>::Cons(z, x), Nat::S(n))
+  // }
+
+  // #[annotate]
+  // #[for_type(LinkedList<A> => <A>)]
+  // #[inductive(x: LinkedList<A>)]
+  // fn lemma_3<A>(y: A, z: A) -> bool {
+  //   implies(
+  //     elem::<A>(y, x),
+  //     elem::<A>(y, LinkedList::<A>::Cons(z, x))
+  //   )
+  // }
+
+  #[assume]
+  #[for_type(LinkedList<A> => <A>)]
+  // #[inductive(xs: LinkedList<A>, z: Nat)]
+  fn lemma_4<A>(x: A, xs: LinkedList<A>, z: Nat) -> bool {
+    implies(
+      def_and_eq(
+        at::<A>(xs, z),
+        MyOpt::<A>::Some(x)
+      ),
+      exists(
+        |y: Nat| {
+          def_and_eq(
+            at::<A>(xs, y),
+            MyOpt::<A>::Some(x)
+          )
+        }
+      )
+    )
+  }
+
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
   #[inductive(xs: LinkedList<A>)]

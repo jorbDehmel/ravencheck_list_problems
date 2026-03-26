@@ -64,12 +64,22 @@ mod p10 {
   #[phantom]
   fn g<B, C>(_: B) -> LinkedList<C> {}
 
+  #[define]
+  enum MyType<A, B, C> {
+    MyType(LinkedList<A>, LinkedList<B>, LinkedList<C>)
+  }
+
+  /*
+  Via Nick: Create a new dummy type which uses all A, B, C and
+  forces instantiations for all. Inductive doesn't need to be
+  changed, but for_type does.
+  */
   #[annotate]
-  #[for_type(LinkedList<A> => <A>)]
-  #[for_type(LinkedList<B> => <B>)]
-  #[for_type(LinkedList<C> => <C>)]
+  #[for_type(Mytype<A, B, C> => <A, B, C>)]
   #[inductive(m: LinkedList<A>)]
   fn list_assoc<A: PartialEq, B: PartialEq, C: PartialEq>() -> bool {
+    let _: MyType<A, B, C> = MyType::<A, B, C>::MyType(LinkedList::<A>::Nil, LinkedList::<B>::Nil, LinkedList::<C>::Nil);
+
     map_concat::<B, C>(
       map_concat::<A, B>(m.clone(), f::<A, B>),
       g::<B, C>

@@ -138,24 +138,6 @@ mod p21 {
   //////////////////////////////////////////////////////////////
 
   #[annotate]
-  #[for_type(LinkedList<A> => <A>)]
-  #[inductive(xs: LinkedList<A>)]
-  fn p21_1<A>() -> bool {
-    implies(
-      // if even(length::<A>(xs)) {
-      //   Nat::Z
-      // } else {
-      //   Nat::S(Nat::Z)
-      // } == Nat::Z,
-      // Cheater's method because the other is unsupported:
-      even(length::<A>(xs)),
-      unpair::<A>(
-        pairs::<A>(xs)
-      ) == xs
-    )
-  }
-
-  #[annotate]
   #[inductive(x: Nat)]
   fn p21_4() -> bool {
     plus(x, Nat::Z) == x
@@ -173,10 +155,22 @@ mod p21 {
     plus(x, y) == plus(y, x)
   }
 
-
   #[annotate]
   #[inductive(x: Nat, y: Nat, z: Nat)]
   fn p21_2() -> bool {
     plus(x, plus(y, z)) == plus(plus(x, y), z)
+  }
+
+  #[annotate]
+  #[for_type(LinkedList<A> => <A>)]
+  #[inductive(xs: LinkedList<A>)]
+  fn p21_1<A>() -> bool {
+    implies(
+      // Cheater's method because the real one is unsupported:
+      even(length::<A>(xs)),
+      unpair::<A>(
+        pairs::<A>(xs)
+      ) == xs
+    )
   }
 }
