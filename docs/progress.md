@@ -23,6 +23,8 @@ implement under the current version of ravencheck.
  return_2.smt2                | p44.rs | 0                 | 0.04s
  weird_is_normal.smt2         | p46.rs |                   |
 
+Problem 29 is a variation on problem 14.
+
 ## Problems ignored
 
 The following files have unsupported features.
