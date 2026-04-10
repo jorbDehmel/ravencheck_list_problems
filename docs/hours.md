@@ -48,3 +48,5 @@ week. To ensure this is true, I am logging my hours here.
  3/26/26 | 11:00 AM | 12:30 PM | 61 hours   | Worked on p46
  3/27/26 | 11:00 AM | 12:30 PM | 62.5 hours | Worked on p46, meeting
  4/2/26  | 10:30 PM | 11:00 PM | 63 hours   | Added initial doc for p4
+ 4/4/26  | 10:00 AM | 12:00 PM | 65 hours   | Worked on p4 docs
+ 4/10/26 | 11:00 AM | 12:30 PM | 66.5 hours | Worked on p4 docs, meeting
