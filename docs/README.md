@@ -10,7 +10,7 @@ This repo documents an independent study taking place in Spring
 
 The files of `../problems` are copied directly from the TIP
 benchmark set. They are used without permission. The associated
-license can be found in the first half of `./LICENSE`.
+license can be found in the first half of `../LICENSE`.
 
 ## Abstract
 

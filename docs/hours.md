@@ -19,7 +19,7 @@ week. To ensure this is true, I am logging my hours here.
  1/16/26 | 2:30 PM  | 4:30 PM  | 14 hours   | Finished A1
  1/21/26 | 12:15 PM | 12:45 PM | 14.5 hours | Worked on p1
  1/21/26 | 2:30 PM  | 3:30 PM  | 15.5 hours | Meetings
- 1/22/26 | 12:00 PM | 1:30 PM  | 17 hours   | Worked on p1, p2. Added pairs and nats.
+ 1/22/26 | noon     | 1:30 PM  | 17 hours   | Worked on p1, p2. Added pairs and nats.
  1/27/26 | 8:00 PM  | 8:30 PM  | 18.5 hours | Worked on p8
  1/27/26 | 10:45 PM | 12:45 AM | 20.5 hours | Worked on p29, flagged major issues
  1/30/26 | 8:30 PM  | 9:30 PM  | 21.5 hours | Fixed syntax in p2, started p5
@@ -31,9 +31,9 @@ week. To ensure this is true, I am logging my hours here.
  2/12/26 | 11:00 AM | 2:00 PM  | 32.5 hours | Worked on p4
  2/12/26 | 6:00 PM  | 7:00 PM  | 33.5 hours | Got p4 working!!!
  2/13/26 | 11:00 AM | 12:30 PM | 35 hours   | Meetings, worked on p8
- 2/14/26 | 11:30 AM | 12:00 PM | 35.5 hours | Worked on p8
+ 2/14/26 | 11:30 AM | noon     | 35.5 hours | Worked on p8
  2/17/26 | 11:00 AM | 2:00 PM  | 38.5 hours | Worked on p8
- 2/21/26 | 04:00 PM | 5:30 PM  | 40 hours   | Worked on p8 (lemma 2)
+ 2/21/26 | 4:00 PM  | 5:30 PM  | 40 hours   | Worked on p8 (lemma 2)
  2/22/26 | 7:00 PM  | 10:00 PM | 43 hours   | Worked on p8
  2/22/26 | 11:00 PM | 12:30 AM | 44.5 hours | Got p8 working!!!
  2/27/26 | 11:00 AM | 12:30 PM | 46 hours   | Got p11, p5 working, meeting
@@ -48,5 +48,6 @@ week. To ensure this is true, I am logging my hours here.
  3/26/26 | 11:00 AM | 12:30 PM | 61 hours   | Worked on p46
  3/27/26 | 11:00 AM | 12:30 PM | 62.5 hours | Worked on p46, meeting
  4/2/26  | 10:30 PM | 11:00 PM | 63 hours   | Added initial doc for p4
- 4/4/26  | 10:00 AM | 12:00 PM | 65 hours   | Worked on p4 docs
+ 4/4/26  | 10:00 AM | noon     | 65 hours   | Worked on p4 docs
  4/10/26 | 11:00 AM | 12:30 PM | 66.5 hours | Worked on p4 docs, meeting
+ 4/16/26 | 11:00 AM | 2:00 PM  | 69.5 hours | Worked on p8 docs

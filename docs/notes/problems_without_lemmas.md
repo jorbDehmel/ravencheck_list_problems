@@ -1,5 +1,5 @@
 
-# Problems which did not need any lemmas (5, 9, 11, 14, 22, and 44)
+# List problems which did not need any lemmas (list problems 5, 9, 11, 14, 22, and 44)
 
 These problems all verified without any additional effort. The
 following are their translations from SMT2 into rust.

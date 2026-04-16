@@ -26,7 +26,6 @@ implement under the current version of ravencheck.
 Problem 29 is a variation on problem 14.
 
 Todo:
-- Polish p8 writeup (most important)
 - Verify p29
 - Verify p46
 - Revisit unsupported problems (least important)
@@ -81,7 +80,8 @@ could probably be fixed by unrolling them to become regular
 recursive.
 
 I suspect that the following are unsupported and/or impossible
-to encode, but I don't have any proof of that.
+to encode. Several also display what I believe to be bugs in
+ravencheck.
 
  Problem file                 | File   | Notes
 ------------------------------|--------|------------------------------------------
