@@ -25,8 +25,15 @@ def concat (x : LinkedList (LinkedList a)) : LinkedList a :=
 
 ----------------------------------------------------------------
 
-axiom lemma_1 {a : Type v}
+theorem lemma_13 : (concat (@LinkedList.nil (LinkedList a)) = nil) := by rfl
+
+theorem lemma_11 {a : Type v} : ((@LinkedList.nil a) = weird_concat (@LinkedList.nil (LinkedList a))) := by
+  sorry
+
+theorem lemma_1 {a : Type v}
     : (concat (@LinkedList.nil (LinkedList a))) = (weird_concat (@LinkedList.nil (LinkedList a)))
+    := by
+  exact Eq.trans lemma_13 lemma_11
 
 -- DOESN'T WORK IN RAVENCHECK
 theorem lemma_2 (l_data : LinkedList a)
@@ -42,13 +49,10 @@ theorem lemma_10 (n : LinkedList a) : append nil n = n
     := by
   rfl
 
-theorem lemma_11 : (weird_concat ((@LinkedList.cons (LinkedList a)) ((@LinkedList.nil a)) n) = weird_concat n)
-  := by rfl
-
 -- DOESN'T WORK IN RAVENCHECK
 theorem lemma_12 : (weird_concat n = weird_concat (cons nil n))
     :=
-  Eq.symm lemma_11
+  sorry
 
 -- DOESN'T WORK IN RAVENCHECK
 theorem lemma_5 (n : LinkedList (LinkedList a))
@@ -75,8 +79,8 @@ theorem lemma_9 (ih : append ldn (weird_concat ln) = weird_concat (cons ldn ln))
   grind
 
 -- DOESN'T WORK IN RAVENCHECK
-theorem lemma_8 (ldd : a) (ih : append ldn (weird_concat ln) = weird_concat (cons ldn ln))
-    : ((cons ldd (weird_concat (cons ldn ln))) = (weird_concat (cons (cons ldd ldn) ln)))
+-- Also doesn't check via rfl or grind, despite being trivial
+theorem lemma_8 : ((cons ldd (weird_concat (cons ldn ln))) = (weird_concat (cons (cons ldd ldn) ln)))
     := by
   sorry
 
@@ -92,7 +96,7 @@ theorem lemma_3 (l_data : LinkedList a)
       lemma_6
       (Eq.trans
         (lemma_7 ldd ih)
-        (lemma_8 ldd ih)
+        lemma_8
       )
 
 -- DOESN'T WORK IN RAVENCHECK

@@ -109,7 +109,7 @@ mod p46 {
     weird_concat::<A>(LinkedList::<LinkedList<A>>::Nil)
   }
 
-  // Fails
+  // Fails unexpectedly!
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
   #[inductive(a: LinkedList<A>)]
@@ -168,7 +168,7 @@ mod p46 {
     )
   }
 
-  // Fails
+  // Fails unexpectedly!
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
   #[inductive(ln: LinkedList<LinkedList<A>>)]
@@ -209,8 +209,7 @@ mod p46 {
   // Fails
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
-  #[inductive(ln: LinkedList<LinkedList<A>>)]
-  fn lemma_8<A>(ldd: A, ldn: LinkedList<A>) -> bool {
+  fn lemma_8<A>(ldd: A, ldn: LinkedList<A>, ln: LinkedList<LinkedList<A>>) -> bool {
     LinkedList::<A>::Cons(ldd, weird_concat::<A>(LinkedList::<LinkedList<A>>::Cons(ldn, ln)))
     ==
     weird_concat::<A>(LinkedList::<LinkedList<A>>::Cons(LinkedList::<A>::Cons(ldd, ldn), ln))
@@ -222,10 +221,7 @@ mod p46 {
   #[inductive(a: LinkedList<A>, b: LinkedList<LinkedList<A>>)]
   fn lemma_3<A>() -> bool {
     weird_concat::<A>(
-      LinkedList::<LinkedList<A>>::Cons(
-        a,
-        b
-      )
+      LinkedList::<LinkedList<A>>::Cons(a, b)
     ) == append::<A>(a, weird_concat::<A>(b))
   }
 
