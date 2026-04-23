@@ -40,8 +40,12 @@
 #[ravencheck::check_module]
 #[allow(dead_code)]
 mod p12 {
-  #[import]
-  use crate::poly_list::poly_linked_list::*;
+  #[define]
+  #[derive(PartialEq, Clone)]
+  pub enum LinkedList<T> {
+    Nil,
+    Cons(T, Box<LinkedList<T>>),
+  }
 
   #[define]
   #[derive(PartialEq, Clone)]
@@ -101,7 +105,7 @@ mod p12 {
   #[define]
   #[recursive]
   #[total]
-  fn nub_by<A: PartialEq + Clone, F2: Fn(A) -> bool, F: Fn(A) -> F2 + Clone>(x: F, y: LinkedList<A>) -> LinkedList<A> {
+  fn nub_by<A: PartialEq + Clone>(x: fn(A, A) -> bool, y: LinkedList<A>) -> LinkedList<A> {
     match y {
       LinkedList::Nil => LinkedList::Nil,
       LinkedList::Cons(z, xs) => LinkedList::Cons(
@@ -110,7 +114,7 @@ mod p12 {
           x.clone(),
           filter(
             |y2: A| {
-              !x(z.clone())(y2)
+              !x(z.clone(), y2)
             },
             *xs
           )
@@ -119,10 +123,6 @@ mod p12 {
     }
   }
 
-  /*
-  Non-thunk in Force position????
-  IDK what that means
-  */
   #[annotate]
   #[for_type(LinkedList<A> => <A>)]
   #[inductive(xs: LinkedList<A>)]
@@ -132,10 +132,8 @@ mod p12 {
       count(
         x,
         nub_by(
-          |y: A| {
-            |z: A| {
-              y == z
-            }
+          |y: A, z: A| {
+            y == z
           },
           xs
         )

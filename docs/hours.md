@@ -51,3 +51,10 @@ week. To ensure this is true, I am logging my hours here.
  4/4/26  | 10:00 AM | noon     | 65 hours   | Worked on p4 docs
  4/10/26 | 11:00 AM | 12:30 PM | 66.5 hours | Worked on p4 docs, meeting
  4/16/26 | 11:00 AM | 2:00 PM  | 69.5 hours | Worked on p8 docs
+ 4/19/26 | 4:00 PM  | 5:30 PM  | 71 hours   | Evaluated problems for de-Currying
+ 4/20/26 | 9:00 PM  | 11:00 PM | 73 hours   | Formalizing p46 in lean
+ 4/21/26 | 11:00 AM | 12:00 PM | 74 hours   | Formalizing p46 in lean
+ 4/21/26 | 6:00 PM  | 7:00 PM  | 75 hours   | More lean stuff
+ 4/22/26 | 9:00 PM  | 11:00 PM | 77 hours   | More lean stuff
+ 4/23/26 | 11:00 AM | 2:00 PM  | 80 hours   | Even more lean stuff for p46
+ 4/24/26 |          |          |            | Final wrap-up + meeting

@@ -130,9 +130,9 @@ mod p13 {
     match y {
       LinkedList::<A>::Nil => LinkedList::<A>::Nil,
       LinkedList::<A>::Cons(z, ys) => if x == z {
-        delete_all(x, *ys)
+        delete_all::<A>(x, *ys)
       } else {
-        LinkedList::<A>::Cons(z, Box::new(delete_all(x, *ys)))
+        LinkedList::<A>::Cons(z, Box::new(delete_all::<A>(x, *ys)))
       }
     }
   }
@@ -145,10 +145,8 @@ mod p13 {
       delete_all::<A>(x, xs)
       ==
       delete_by::<A>(
-        |y: A| {
-          |z: A| {
-            y == z
-          }
+        |y: A, z: A| {
+          y == z
         },
         x,
         xs

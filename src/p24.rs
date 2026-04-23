@@ -143,14 +143,14 @@ mod p24 {
 
   #[define]
   #[recursive]
-  fn delete_by<T: PartialEq + Clone, F: Fn(T, T) -> bool>(x: F, y: T, z: LinkedList<T>) -> LinkedList<T> {
+  fn delete_by<T: PartialEq + Clone>(x: fn(T, T) -> bool, y: T, z: LinkedList<T>) -> LinkedList<T> {
     match z {
       LinkedList::<T>::Nil => LinkedList::<T>::Nil,
       LinkedList::<T>::Cons(y2, ys) =>
         if x(y.clone(), y2.clone()) {
           *ys
         } else {
-          LinkedList::<T>::Cons(y2, Box::new(delete_by::<T, F>(x, y, *ys)))
+          LinkedList::<T>::Cons(y2, Box::new(delete_by::<T>(x, y, *ys)))
         }
     }
   }
@@ -168,7 +168,7 @@ mod p24 {
         &&
         is_permutation::<T>(
           *x_next,
-          delete_by::<T, fn(T, T) -> bool>(
+          delete_by::<T>(
             |x4: T, x5: T| {
               x4 == x5
             },

@@ -59,7 +59,7 @@ mod p38 {
   #[define]
   #[recursive]
   #[total]
-  fn nub_by<A: PartialEq + Clone, F2: Fn(A) -> bool, F: Fn(A) -> F2 + Clone>(x: F, y: LinkedList<A>) -> LinkedList<A> {
+  fn nub_by<A: PartialEq + Clone>(x: fn(A, A) -> bool, y: LinkedList<A>) -> LinkedList<A> {
     match y {
       LinkedList::Nil => LinkedList::Nil,
       LinkedList::Cons(z, xs) => LinkedList::Cons(
@@ -68,7 +68,7 @@ mod p38 {
           x.clone(),
           filter(
             |y2: A| {
-              !x(z.clone())(y2)
+              !x(z.clone(), y2)
             },
             *xs
           )
@@ -82,8 +82,8 @@ mod p38 {
   #[inductive(xs: LinkedList<A>)]
   fn p38<A>() -> bool {
     nub_by(
-      |x: A| {|y: A| { x == y }},
-      nub_by(|z: A| {|x2: A| { z == x2 }}, xs)
-    ) == nub_by(|x3: A| {|x4: A| { x3 == x4 }}, xs)
+      |x: A, y: A| { x == y },
+      nub_by(|z: A, x2: A| { z == x2 }, xs)
+    ) == nub_by(|x3: A, x4: A| { x3 == x4 }, xs)
   }
 }

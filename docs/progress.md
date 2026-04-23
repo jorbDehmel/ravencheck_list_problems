@@ -18,7 +18,7 @@ implement under the current version of ravencheck.
  concat_map_bind.smt2         | p11.rs | 0                 | 0.13s
  elem.smt2                    | p14.rs | 0                 | 0.07s
  nat_Select.smt2              | p22.rs | 0                 | 0.10s
- nat_elem.smt2                | p29.rs |                   |
+ nat_elem.smt2                | p29.rs |                   | I suspect this is not implementable
  return_1.smt2                | p43.rs | 1                 | 0.06s
  return_2.smt2                | p44.rs | 0                 | 0.04s
  weird_is_normal.smt2         | p46.rs |                   |
@@ -28,7 +28,6 @@ Problem 29 is a variation on problem 14.
 Todo:
 - Verify p29
 - Verify p46
-- Revisit unsupported problems (least important)
 
 ## Problems ignored
 
@@ -48,9 +47,8 @@ The following files have unsupported features.
 
 Right now, functions that return functions are not
 allowed in ravencheck. These actually comprise the bulk of the
-problems for linked lists, so I'm wary of ignoring them. For
-now, I'll put them on the back burner but not write them off.
-The following are those problems.
+problems for linked lists. None of the following are supported.
+They also cannot be "De-Curry'd" to fix this problem.
 
  Problem file                 | File
 ------------------------------|--------
