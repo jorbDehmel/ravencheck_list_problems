@@ -12,6 +12,27 @@ The files of `../problems` are copied directly from the TIP
 benchmark set. They are used without permission. The associated
 license can be found in the first half of `../LICENSE`.
 
+## Final summary (April 24, '26)
+
+I finished 9 problems. Problem 46 may be possible, but I was
+not able to complete it in time. Implementing lemmas based on
+a lean proof of the problem was insufficient. The remaining 36
+problems either use currently unsupported features or I suspect
+to be impossible to encode. The maximum number of lemmas for a
+problem was 12, but most completed problems used zero lemmas.
+Please see `./progress.md` for more details. Overall, I logged
+81.5 hours, well in-line with the required 80 hours of work.
+This is a conservative estimate, I also spent a lot of unlogged
+time thinking about the problems, reading, and learning
+techniques.
+
+When I wrote the goals, I did not realize there were 46
+problems: I thought there would be around 10 or 15. Therefore,
+my goals of "complete half / all the problems" were always
+doomed to fail. That being said, I have merged all the completed
+work and documentation to the main TIP repo and therefore have
+completed the stated goals of the independent study.
+
 ## Abstract
 
 Existing work has created `ravencheck`, an axiomatic Rust

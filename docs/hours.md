@@ -57,4 +57,7 @@ week. To ensure this is true, I am logging my hours here.
  4/21/26 | 6:00 PM  | 7:00 PM  | 75 hours   | More lean stuff
  4/22/26 | 9:00 PM  | 11:00 PM | 77 hours   | More lean stuff
  4/23/26 | 11:00 AM | 2:00 PM  | 80 hours   | Even more lean stuff for p46
- 4/24/26 |          |          |            | Final wrap-up + meeting
+ 4/24/26 | 11:00 AM | 12:30 PM | 81.5 hours | Final wrap-up + meeting
+
+I believe this is required, but I don't know if I'm supposed
+to turn it in (and if so, where).

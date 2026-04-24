@@ -9,25 +9,20 @@ problems.
 The following are the problems which are definitely possible to
 implement under the current version of ravencheck.
 
- Problem file                 | File   | Additional lemmas | Verification time
-------------------------------|--------|-------------------|-------------------
- PairUnpair.smt2              | p4.rs  | 12                | 2.29s
+ Problem file                 | File   | Additional lemmas | Verification time / notes
+------------------------------|--------|-------------------|--------------------------------------
  Select.smt2                  | p5.rs  | 0                 | 0.11s
- append_inj_1.smt2            | p8.rs  | 5                 | 0.37s
  append_inj_2.smt2            | p9.rs  | 0                 | 0.09s
  concat_map_bind.smt2         | p11.rs | 0                 | 0.13s
  elem.smt2                    | p14.rs | 0                 | 0.07s
  nat_Select.smt2              | p22.rs | 0                 | 0.10s
- nat_elem.smt2                | p29.rs |                   | I suspect this is not implementable
- return_1.smt2                | p43.rs | 1                 | 0.06s
  return_2.smt2                | p44.rs | 0                 | 0.04s
- weird_is_normal.smt2         | p46.rs |                   |
+ return_1.smt2                | p43.rs | 1                 | 0.06s
+ append_inj_1.smt2            | p8.rs  | 5                 | 0.37s
+ PairUnpair.smt2              | p4.rs  | 12                | 2.29s
+ weird_is_normal.smt2         | p46.rs |                   | Lean proof did not help
 
 Problem 29 is a variation on problem 14.
-
-Todo:
-- Verify p29
-- Verify p46
 
 ## Problems ignored
 
@@ -72,10 +67,9 @@ They also cannot be "De-Curry'd" to fix this problem.
  perm_symm.smt2               | p41.rs
  perm_trans.smt2              | p42.rs
 
-These could probably be fixed by un-Currying them. There are
-other problems which have mutually recursive functions which
-could probably be fixed by unrolling them to become regular
-recursive.
+There are other problems which have mutually recursive functions
+which could probably be fixed by unrolling them to become
+regular recursive.
 
 I suspect that the following are unsupported and/or impossible
 to encode. Several also display what I believe to be bugs in
@@ -88,3 +82,4 @@ ravencheck.
  nat_PairUnpair.smt2          | p21.rs | Weirdness with using I/T/E in expression
  nat_elem_map.smt2            | p30.rs | Sort cycles in main VC
  weird_concat_map_bind.smt2   | p45.rs | VC doesn't type check, code does (bug?)
+ nat_elem.smt2                | p29.rs | Sort cycles whenever close to proving
